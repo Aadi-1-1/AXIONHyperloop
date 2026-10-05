@@ -196,7 +196,7 @@ Beyond the tests, I reviewed screenshots of Home, Network, Business, Investors a
 
 1. **Forge Hyperloop was not inspected.** The reference site remains blocked by this environment's network policy, so the design is original.
 2. **Some sources are secondary.** Company failures and test results rely partly on trade press, and each entry is labelled. Developer claims are "reported", not verified.
-3. **Not deployed.** Deployment needs the repository owner to connect it to Vercel. No credentials are needed or requested here; the steps are in the README.
+3. **Not deployed.** Deployment needs the repository owner to connect it to Vercel. No credentials are needed or requested here; the steps are in the README. The single-file preview of this pass is at https://claude.ai/artifact/G2HSogeJAY6256uPYTA3tc (hash URLs, for example `#/present/ask`).
 4. **Browser coverage.** Testing was headless Chromium only. Safari, Firefox, real projectors and touch devices were not tested.
 5. **Map labels at thumbnail size.** On the smallest regional thumbnails (for example the China card on a 720p slide), label placement can drop a crowded label rather than overlap it. Full-size regional views label every endpoint.
 6. **The lead-corridor model is a screening model.** It has no tax, ramp-up years, inflation, construction-period interest, residual value or cross-border revenue sharing.
