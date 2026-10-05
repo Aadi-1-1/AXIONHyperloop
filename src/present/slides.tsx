@@ -92,9 +92,7 @@ function Customer() {
       <Message slug="customer" />
       <div className="s-two s-top">
         <div className="s-payer">
-          <p className="s-muted-label">Who pays</p>
-          <p className="s-payer-who">Logistics providers and large shippers</p>
-          <p className="s-body">They buy reserved terminal-to-terminal capacity under recurring contracts and keep their own collection and delivery.</p>
+          <p className="s-body">Logistics providers and large shippers buy reserved terminal-to-terminal capacity under recurring contracts and keep their own collection and delivery.</p>
           <p className="s-note">{focusRationale}</p>
         </div>
         <ul className="s-segments">
@@ -271,7 +269,7 @@ function Economics() {
           </div>
           <div>
             <dt>Capital-recovery charge</dt>
-            <dd className="neg">{usdCompact(central.capitalRecoveryCharge, 0)}</dd>
+            <dd className="neg">{usdCompact(central.capitalRecoveryCharge)} / yr</dd>
           </div>
         </dl>
         <div className="s-req">
@@ -354,7 +352,9 @@ function Ask() {
           <p className="s-body">First-corridor construction finance. Not part of this ask. At central assumptions it would not yet be financeable.</p>
         </div>
       </div>
-      <FundingLadder compact />
+      <div className="s-ladder-row">
+        <FundingLadder compact />
+      </div>
     </div>
   )
 }

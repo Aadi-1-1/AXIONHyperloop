@@ -52,8 +52,7 @@ export function TrancheTable() {
         </tbody>
         <tfoot>
           <tr>
-            <td>Committed at close</td>
-            <td />
+            <td colSpan={2}>Committed at close</td>
             <td className="num mono">{usdCompact(t.reduce((a, x) => a + x.amount, 0))}</td>
             <td />
             <td />
@@ -61,8 +60,8 @@ export function TrancheTable() {
         </tfoot>
       </table>
       <p className="small muted">
-        Each tranche equals that year’s spending, so the undrawn commitment at each year end ($38m, $20m, $0) matches the closing cash
-        if the full $50m were paid at close. No revenue is assumed.
+        Each tranche equals that year’s spending, so the undrawn commitment at each year end ({t.map((x) => usdCompact(x.undrawnAfter)).join(', ')}) matches the
+        closing cash if the full {usdCompact(t.reduce((a, x) => a + x.amount, 0))} were paid at close. No revenue is assumed.
       </p>
     </div>
   )

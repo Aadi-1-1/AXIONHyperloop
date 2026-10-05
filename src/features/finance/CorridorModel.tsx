@@ -7,7 +7,7 @@ import { KindTag, SourceRef } from '../../components/common'
 import './finance.css'
 
 const bn = (v: number) => (Math.abs(v) >= 1e9 ? `${v < 0 ? '−' : ''}$${(Math.abs(v) / 1e9).toFixed(1)}bn` : usdCompact(v, 0))
-const m0 = (v: number) => usdCompact(v, 0)
+const m0 = (v: number) => (Math.abs(v) >= 1e9 ? usdCompact(v, 2) : usdCompact(v, 0))
 const kg = (v: number | null) => (v === null ? 'n/a' : usdPerKg(v))
 const mt = (t: number) => `${(t / 1e6).toFixed(2)} Mt`
 
@@ -309,15 +309,36 @@ function Capacity({ r }: { r: CorridorResult }) {
   return (
     <div>
       <h4 className="label">Capacity, derived</h4>
-      <pre className="mono small cm-derivation" tabIndex={0}>{`${i.departuresPerHourPerDirection} departures/h × 2 directions
-× ${i.operatingHoursPerDay} h × ${i.operatingDaysPerYear} days   = ${r.capacity.maxDeparturesPerYear.toLocaleString('en-US')} departures/yr
-× ${i.podPayloadT} t payload × ${pct(i.podLoadFactor)} load      = ${mt(r.capacity.capacityT)} practical capacity
-× ${pct(i.utilisation)} slots used                = ${mt(r.capacity.tonnes)} carried
-                                ≈ ${Math.round(r.capacity.tonnesPerDay).toLocaleString('en-US')} t per operating day
-
-Fleet: round trip ${r.capex.fleet.roundTripHours.toFixed(2)} h (${i.alignmentKm} km at ${i.averageSpeedKmh} km/h avg
-+ ${i.terminalTurnaroundMin} min turnaround, each way)
-→ ${r.capex.fleet.inService.toFixed(1)} pods in service + ${pct(i.podSpareShare)} spares = ${r.capex.fleet.total}`}</pre>
+      <ol className="cm-derivation small">
+        <li>
+          <span>
+            {i.departuresPerHourPerDirection} departures/h × 2 directions × {i.operatingHoursPerDay} h × {i.operatingDaysPerYear} days
+          </span>
+          <strong className="mono">{r.capacity.maxDeparturesPerYear.toLocaleString('en-US')} departures/yr</strong>
+        </li>
+        <li>
+          <span>
+            × {i.podPayloadT} t payload × {pct(i.podLoadFactor)} average load
+          </span>
+          <strong className="mono">{mt(r.capacity.capacityT)} practical capacity</strong>
+        </li>
+        <li>
+          <span>× {pct(i.utilisation)} of slots sold</span>
+          <strong className="mono">{mt(r.capacity.tonnes)} carried</strong>
+        </li>
+        <li>
+          <span>Per operating day</span>
+          <strong className="mono">≈{Math.round(r.capacity.tonnesPerDay).toLocaleString('en-US')} t</strong>
+        </li>
+        <li>
+          <span>
+            Fleet: round trip {r.capex.fleet.roundTripHours.toFixed(2)} h ({i.alignmentKm} km at {i.averageSpeedKmh} km/h plus{' '}
+            {i.terminalTurnaroundMin} min turnaround each way) → {r.capex.fleet.inService.toFixed(1)} pods in service + {pct(i.podSpareShare)}{' '}
+            spares
+          </span>
+          <strong className="mono">{r.capex.fleet.total} pods</strong>
+        </li>
+      </ol>
       <p className="small muted">Speed is used only to size the fleet. Demonstrated test speeds are far lower.</p>
     </div>
   )
@@ -433,7 +454,15 @@ function Sensitivity({ inputs }: { inputs: CorridorInputs }) {
             </tbody>
           </table>
           <p className="small muted heat-key">
-            <span className="hk ok" /> ≥ {inputs.targetDscr} <span className="hk warn" /> 1.0–{inputs.targetDscr} <span className="hk bad" /> below 1.0, so debt cannot be serviced
+            <span>
+              <span className="hk ok" /> ≥ {inputs.targetDscr} lender target
+            </span>
+            <span>
+              <span className="hk warn" /> 1.0–{inputs.targetDscr}
+            </span>
+            <span>
+              <span className="hk bad" /> below 1.0: debt cannot be serviced
+            </span>
           </p>
         </div>
         <div className="table-scroll" tabIndex={0}>

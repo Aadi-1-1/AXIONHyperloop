@@ -224,7 +224,7 @@ export default function HomePage() {
                 </div>
                 <div>
                   <dt>Central construction</dt>
-                  <dd className="mono">≈${(lead.capex.total / 1e9).toFixed(0)}bn</dd>
+                  <dd className="mono">≈${(lead.capex.total / 1e9).toFixed(1)}bn</dd>
                 </div>
               </dl>
               <div className="cluster">

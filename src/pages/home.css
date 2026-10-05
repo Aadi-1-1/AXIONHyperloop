@@ -173,7 +173,7 @@
   background: var(--freight);
 }
 .product-passenger::before {
-  background: repeating-linear-gradient(90deg, var(--passenger) 0 12px, transparent 12px 18px);
+  background: var(--passenger);
 }
 .product-freight {
   background: linear-gradient(180deg, rgba(63, 216, 240, 0.05), transparent 50%), var(--bg-raised);

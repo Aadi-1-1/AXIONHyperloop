@@ -956,3 +956,67 @@
   font-family: var(--font-mono) !important;
   font-size: 1.4em !important;
 }
+
+/* Projector fit: smaller titles may run wider, the ladder runs across, region maps get shorter. */
+.s-title-sm {
+  max-width: 34ch;
+}
+.s-contrast .s-ask-num {
+  font-size: max(48px, calc(var(--u) * 6.4));
+  line-height: 1;
+  margin: 0.15em 0 0.2em;
+}
+.s-ask-num.later {
+  font-size: max(40px, calc(var(--u) * 5.4));
+}
+@media (min-width: 900px) {
+  .s-ladder-row .ladder {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+    gap: 8px;
+  }
+  .s-ladder-row .ladder.compact .rung {
+    grid-template-columns: 1fr;
+    align-content: start;
+    gap: 0.4em;
+    padding: 0.7em 0.9em;
+  }
+  .s-ladder-row .rung-step {
+    width: 26px;
+    height: 26px;
+    font-size: 0.8em;
+  }
+  .s-ladder-row .ladder.compact .rung-amount {
+    text-align: left;
+    font-size: 1.25em;
+  }
+  .s-ladder-row .ladder.compact .rung.uncosted .rung-amount {
+    font-size: 0.72em;
+  }
+  .s-ladder-row .rung-title {
+    font-size: 0.9em;
+  }
+  /* Region cards: one compact caption line so both rows fit a 720p projector. */
+  .s-regions .flat-map.compact {
+    aspect-ratio: 2 / 1;
+  }
+  .s-regions .region-card-text {
+    display: flex;
+    align-items: baseline;
+    gap: 8px;
+    padding: 5px 10px 6px;
+    font-size: 0.85em;
+    white-space: nowrap;
+    overflow: hidden;
+  }
+}
+@media (min-width: 900px) and (max-height: 800px) {
+  .s-regions .flat-map.compact {
+    aspect-ratio: 2.3 / 1;
+  }
+}
+.s-regions .region-card-text .small {
+  display: none;
+}
+.s-bullets + .s-note {
+  margin-top: 1em;
+}

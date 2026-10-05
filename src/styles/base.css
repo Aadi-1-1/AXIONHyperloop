@@ -469,7 +469,8 @@ table {
   background: var(--freight);
 }
 .toggle.passenger .swatch {
-  background: repeating-linear-gradient(90deg, var(--passenger) 0 6px, transparent 6px 9px);
+  /* Colour encodes the system; line style is reserved for development status. */
+  background: var(--passenger);
 }
 
 .chip {
@@ -681,6 +682,7 @@ input[type='range']:focus-visible::-moz-range-thumb {
   text-align: right;
   font-variant-numeric: tabular-nums;
   padding-right: 0;
+  padding-left: 16px;
   white-space: nowrap;
 }
 .data-table tfoot td {

@@ -52,7 +52,12 @@ function shortest(adj: Map<string, Edge[]>, from: string, to: string): Segment[]
   while (true) {
     let node: string | null = null
     let best = Infinity
-    for (const [n, d] of dist) if (!done.has(n) && d < best) ((best = d), (node = n))
+    for (const [n, d] of dist) {
+      if (!done.has(n) && d < best) {
+        best = d
+        node = n
+      }
+    }
     if (node === null) return null
     if (node === to) break
     done.add(node)
@@ -78,7 +83,14 @@ function shortest(adj: Map<string, Edge[]>, from: string, to: string): Segment[]
 function component(adj: Map<string, Edge[]>, start: string): string[] {
   const seen = new Set([start])
   const stack = [start]
-  while (stack.length) for (const e of adj.get(stack.pop()!) ?? []) if (!seen.has(e.to)) (seen.add(e.to), stack.push(e.to))
+  while (stack.length) {
+    for (const e of adj.get(stack.pop()!) ?? []) {
+      if (!seen.has(e.to)) {
+        seen.add(e.to)
+        stack.push(e.to)
+      }
+    }
+  }
   return [...seen]
 }
 

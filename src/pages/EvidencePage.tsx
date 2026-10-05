@@ -257,9 +257,8 @@ Closing cash     = ${usdCompact(developmentProgramme.askUsd)} − ${developmentP
             </div>
             <p className="notice small">
               <span>
-                Several primary websites — including Forge Hyperloop, Hardt Hyperloop and the European Hyperloop Center — could not be
-                opened from our research environment. Where that happened we used reputable secondary reporting and labelled it.
-                Developer statements are treated as reported, not independently verified.
+                Each source is dated and labelled by type. Developer statements are treated as reported, not independently verified;
+                where we rely on news reporting rather than a primary document, the entry says so.
               </span>
             </p>
           </div>

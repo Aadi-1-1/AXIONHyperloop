@@ -57,7 +57,7 @@ export default function InvestorsPage() {
           </div>
           <div>
             <dt className="label">First corridor, if built</dt>
-            <dd className="figure-num">≈${(lead.capex.total / 1e9).toFixed(0)}bn</dd>
+            <dd className="figure-num">≈${(lead.capex.total / 1e9).toFixed(1)}bn</dd>
           </div>
         </dl>
       </PageHeader>

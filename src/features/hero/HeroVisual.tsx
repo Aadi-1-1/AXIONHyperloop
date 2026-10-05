@@ -358,9 +358,10 @@ export default function HeroVisual() {
         if (h.role === 'transit') ctx.stroke()
         if (h.role !== 'transit') {
           const left = ['kunming', 'kuala-lumpur', 'fukuoka'].includes(h.id)
-          ctx.textAlign = left ? 'right' : 'left'
+          const below = h.id === 'osaka' // Osaka sits between Fukuoka and Tokyo; label it underneath
+          ctx.textAlign = below ? 'center' : left ? 'right' : 'left'
           ctx.fillStyle = 'rgba(214,222,230,0.95)'
-          ctx.fillText(h.city.toUpperCase(), q[0] + (left ? -12 : 12), q[1])
+          ctx.fillText(h.city.toUpperCase(), q[0] + (below ? 0 : left ? -12 : 12), q[1] + (below ? 14 : 0))
         }
       }
       ctx.restore()

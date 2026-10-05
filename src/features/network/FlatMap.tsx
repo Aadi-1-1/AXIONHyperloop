@@ -10,7 +10,7 @@ import './network.css'
 type Camera = { lon: number; lat: number; scale: number }
 
 /** Timings, prototyped separately: camera moves are slower than UI feedback, drawing follows the camera. */
-export const MAP_TIMING = { cameraMin: 0.7, cameraMax: 1.5, drawMin: 0.7, drawMax: 1.6, settle: 0.45, podLap: 7 }
+const MAP_TIMING = { cameraMin: 0.7, cameraMax: 1.5, drawMin: 0.7, drawMax: 1.6, settle: 0.45, podLap: 7 }
 
 function circularMeanLon(lons: number[]) {
   const s = lons.reduce((a, l) => a + Math.sin((l * Math.PI) / 180), 0)

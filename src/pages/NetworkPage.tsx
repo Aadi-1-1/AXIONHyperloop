@@ -142,8 +142,9 @@ export default function NetworkPage() {
               ))}
             </ul>
             <p className="small muted">
-              Reported developer tests: <SourceRef id="techeu-ehc-opens" /> <SourceRef id="ap-hardt-test" />{' '}
-              <SourceRef id="ie-hardt-scale" /> · Standards work: <SourceRef id="cen-cenelec-tr17912" />
+              Reported developer tests: <SourceRef id="hardt-lane-switch-2025" /> <SourceRef id="swisspod-2026" /> · Sector
+              failures: <SourceRef id="hardt-bankrupt-2026" /> <SourceRef id="zeleros-insolvency-2026" /> · Standards work:{' '}
+              <SourceRef id="cen-cenelec-tr17912" />
             </p>
           </div>
         </div>

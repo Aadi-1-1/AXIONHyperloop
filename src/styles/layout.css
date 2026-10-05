@@ -335,3 +335,61 @@
 .source-ref:hover {
   color: var(--freight);
 }
+
+/* ============ Status banner ============ */
+.status-banner {
+  background: var(--bg-raised);
+  border-bottom: 1px solid var(--line);
+  font-size: 12.5px;
+  line-height: 1.45;
+  color: var(--text-2);
+}
+.status-banner-inner {
+  max-width: calc(var(--max) + 80px);
+  padding: 8px var(--gutter);
+  margin: 0 auto;
+  display: flex;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.status-banner strong {
+  color: var(--text);
+  font-weight: 600;
+}
+.status-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+  background: var(--passenger);
+  flex: none;
+  align-self: center;
+}
+.status-banner-inner > span:nth-child(2) {
+  flex: 1 1 auto;
+}
+.status-link {
+  color: var(--freight);
+  text-decoration: none;
+  white-space: nowrap;
+}
+.status-link:hover {
+  text-decoration: underline;
+}
+
+.status-banner .sb-short {
+  display: none;
+}
+@media (max-width: 720px) {
+  .status-banner .sb-long {
+    display: none;
+  }
+  .status-banner .sb-short {
+    display: inline;
+  }
+  .status-banner-inner {
+    flex-wrap: nowrap;
+    padding-top: 6px;
+    padding-bottom: 6px;
+  }
+}

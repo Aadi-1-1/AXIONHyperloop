@@ -4,6 +4,7 @@ import { Outlet, useLocation } from 'react-router-dom'
 import SiteHeader from './SiteHeader'
 import SiteFooter from './SiteFooter'
 import ReturnToPresentation from './ReturnToPresentation'
+import StatusBanner from './StatusBanner'
 import { rememberPage } from '../lib/presentation'
 
 /** Scrolls to top on page change, or to the hash target once it has rendered. */
@@ -71,6 +72,7 @@ export default function Layout() {
       </ScrollLink>
       <ScrollManager />
       <RevealObserver />
+      <StatusBanner />
       <SiteHeader />
       <main id="main" tabIndex={-1}>
         <Suspense

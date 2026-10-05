@@ -147,7 +147,10 @@ export function placeLabels(
     let bestScore = Infinity
     for (const o of options) {
       const s = score(o)
-      if (s < bestScore) ((bestScore = s), (best = o))
+      if (s < bestScore) {
+        bestScore = s
+        best = o
+      }
       if (s === 0) break
     }
     if (bestScore >= 10 && !c.force) continue
