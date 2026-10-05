@@ -1,0 +1,266 @@
+.journey {
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  background: var(--bg-raised);
+  overflow: hidden;
+}
+.journey-top {
+  padding: 36px 68px 84px;
+  border-bottom: 1px solid var(--line);
+  overflow-x: auto;
+}
+.journey-track {
+  position: relative;
+  min-width: 620px;
+  height: 40px;
+}
+.jt-line {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 19px;
+  display: flex;
+  height: 3px;
+}
+.jt-seg {
+  flex: 1;
+  height: 3px;
+  background: repeating-linear-gradient(90deg, var(--line-strong) 0 6px, transparent 6px 10px);
+  transition: background 0.4s;
+}
+.jt-seg.terminal {
+  background: var(--line-strong);
+}
+.jt-seg.tube {
+  background: rgba(63, 216, 240, 0.35);
+  height: 5px;
+  margin-top: -1px;
+  border-radius: 3px;
+}
+.jt-seg.done.road {
+  background: repeating-linear-gradient(90deg, var(--text-2) 0 6px, transparent 6px 10px);
+}
+.jt-seg.done.terminal {
+  background: var(--text-2);
+}
+.jt-seg.done.tube {
+  background: var(--freight);
+}
+.jt-parcel {
+  position: absolute;
+  top: 0;
+  width: 14px;
+  height: 14px;
+  margin-left: -7px;
+  margin-top: -10px;
+  background: var(--passenger);
+  border-radius: 2px;
+  box-shadow: 0 0 0 3px var(--bg-raised);
+  transition: left 0.7s var(--ease);
+  z-index: 2;
+}
+.jt-nodes {
+  list-style: none;
+  position: absolute;
+  inset: 0;
+}
+.jt-nodes li {
+  position: absolute;
+  top: 0;
+  transform: translateX(-50%);
+  display: grid;
+  justify-items: center;
+}
+.jt-node {
+  width: 40px;
+  height: 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  border: 1px solid var(--line-strong);
+  background: var(--bg);
+  color: var(--text-2);
+  font-size: 0.86rem;
+  transition:
+    background 0.3s,
+    border-color 0.3s,
+    color 0.3s;
+}
+.jt-node.where-terminal,
+.jt-node.where-tube {
+  border-color: rgba(63, 216, 240, 0.5);
+}
+.jt-node.where-tube {
+  border-radius: 12px;
+}
+.jt-node:hover {
+  border-color: var(--text);
+  color: var(--text);
+}
+.jt-node.done {
+  color: var(--text);
+  border-color: var(--text-3);
+}
+.jt-node.current {
+  background: var(--text);
+  border-color: var(--text);
+  color: var(--bg);
+}
+.jt-label {
+  position: absolute;
+  top: 50px;
+  width: 116px;
+  text-align: center;
+  font-size: 0.8rem;
+  line-height: 1.3;
+  color: var(--text-3);
+}
+.jt-label.current {
+  color: var(--text);
+  font-weight: 560;
+}
+.jt-customs {
+  position: absolute;
+  top: -26px;
+  font-size: 0.62rem;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--passenger);
+  white-space: nowrap;
+}
+
+.journey-body {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+}
+@media (min-width: 960px) {
+  .journey-body {
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+}
+.journey-detail {
+  padding: clamp(20px, 3vw, 36px);
+  border-bottom: 1px solid var(--line);
+}
+@media (min-width: 960px) {
+  .journey-detail {
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+  }
+}
+.jd-title {
+  margin: 14px 0 8px;
+}
+.jd-summary {
+  font-size: 1.08rem;
+  color: var(--text);
+}
+.jd-checks {
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 4px 0 18px;
+}
+.jd-checks li {
+  padding: 4px 10px;
+  border: 1px solid var(--line);
+  border-radius: 4px;
+  font-family: var(--font-mono);
+  font-size: 0.74rem;
+  color: var(--text-2);
+}
+.jd-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 20px;
+}
+.journey-time {
+  padding: clamp(20px, 3vw, 36px);
+  display: grid;
+  gap: 14px;
+  align-content: start;
+}
+.jtime-bar {
+  display: flex;
+  gap: 2px;
+  height: 22px;
+}
+.jtime-seg {
+  border-radius: 2px;
+  background: var(--line-strong);
+  opacity: 0.75;
+  transition:
+    opacity 0.3s,
+    outline-color 0.3s;
+  outline: 2px solid transparent;
+  outline-offset: 2px;
+}
+.jtime-seg.k-outside {
+  background: repeating-linear-gradient(135deg, #3a4652 0 4px, #2a333d 4px 8px);
+}
+.jtime-seg.k-terminal {
+  background: #6b7885;
+}
+.jtime-seg.k-customs {
+  background: var(--passenger);
+}
+.jtime-seg.k-tube {
+  background: var(--freight);
+}
+.jtime-seg.current {
+  opacity: 1;
+  outline-color: var(--text);
+}
+.jtime-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px 16px;
+  color: var(--text-2);
+}
+.jtime-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+.jtime-legend i {
+  width: 14px;
+  height: 10px;
+  border-radius: 2px;
+  display: inline-block;
+}
+.jtime-legend .k-outside {
+  background: repeating-linear-gradient(135deg, #3a4652 0 3px, #2a333d 3px 6px);
+}
+.jtime-legend .k-terminal {
+  background: #6b7885;
+}
+.jtime-legend .k-customs {
+  background: var(--passenger);
+}
+.jtime-legend .k-tube {
+  background: var(--freight);
+}
+.jtime-compare {
+  display: grid;
+  gap: 10px;
+  padding: 14px 0;
+  border-top: 1px solid var(--line);
+  border-bottom: 1px solid var(--line);
+}
+.jtime-compare > div {
+  display: grid;
+  gap: 6px;
+}
+.jtime-bracket {
+  display: block;
+  height: 8px;
+  border: 1.5px solid var(--text-2);
+  border-top: 0;
+  transition: width 0.4s var(--ease);
+}
+.jtime-bracket.tube {
+  border-color: var(--freight);
+  min-width: 18px;
+}

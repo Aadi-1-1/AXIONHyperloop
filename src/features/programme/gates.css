@@ -1,0 +1,81 @@
+.gate-track {
+  list-style: none;
+  display: grid;
+  gap: 0;
+  counter-reset: gate;
+}
+@media (min-width: 1000px) {
+  .gate-track {
+    grid-template-columns: repeat(5, minmax(0, 1fr));
+  }
+}
+.gate {
+  position: relative;
+  padding: 0 20px 28px 56px;
+}
+@media (min-width: 1000px) {
+  .gate {
+    padding: 56px 22px 0 0;
+  }
+}
+.gate::before {
+  content: '';
+  position: absolute;
+  left: 17px;
+  top: 36px;
+  bottom: 0;
+  width: 1px;
+  background: var(--line-strong);
+}
+@media (min-width: 1000px) {
+  .gate::before {
+    left: 36px;
+    right: 0;
+    top: 17px;
+    bottom: auto;
+    width: auto;
+    height: 1px;
+  }
+}
+.gate:last-child::before {
+  display: none;
+}
+.gate-marker {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 36px;
+  height: 36px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--freight);
+  border-radius: 50%;
+  background: var(--bg);
+  color: var(--freight);
+  font-size: 0.86rem;
+}
+.gate:last-child .gate-marker {
+  background: var(--freight);
+  color: var(--freight-ink);
+}
+.gate-timing {
+  margin-bottom: 6px;
+}
+.gate-question {
+  margin: 8px 0 12px;
+}
+.gate-deliverables {
+  list-style: none;
+  display: grid;
+  gap: 6px;
+  color: var(--text-3);
+  padding-top: 12px;
+  border-top: 1px solid var(--line);
+}
+.gate-deliverables li::before {
+  content: '— ';
+  color: var(--text-3);
+}
+.gate-passenger {
+  margin-top: 32px;
+}

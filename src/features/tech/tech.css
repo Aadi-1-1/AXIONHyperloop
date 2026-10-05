@@ -1,0 +1,315 @@
+.cutaway {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+@media (min-width: 1024px) {
+  .cutaway {
+    grid-template-columns: minmax(0, 1.7fr) minmax(320px, 1fr);
+  }
+}
+.cutaway-figure {
+  padding: clamp(12px, 2vw, 28px);
+  background: var(--bg);
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  align-items: center;
+}
+@media (min-width: 1024px) {
+  .cutaway-figure {
+    border-bottom: 0;
+    border-right: 1px solid var(--line);
+  }
+}
+.cutaway-figure svg {
+  width: 100%;
+  height: auto;
+}
+.cutaway-panel {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  background: var(--bg-raised);
+}
+.system-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  border-bottom: 1px solid var(--line);
+}
+.system-list button {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-height: 44px;
+  padding: 8px 14px;
+  border: 0;
+  border-bottom: 1px solid var(--line);
+  border-right: 1px solid var(--line);
+  background: transparent;
+  color: var(--text-2);
+  text-align: left;
+  font-size: 0.86rem;
+  line-height: 1.25;
+}
+.system-list button:hover {
+  color: var(--text);
+  background: rgba(255, 255, 255, 0.03);
+}
+.system-list button[aria-pressed='true'] {
+  color: var(--text);
+  background: var(--surface);
+  box-shadow: inset 2px 0 0 var(--freight);
+}
+.system-list .idx {
+  font-size: 0.72rem;
+  color: var(--text-3);
+}
+.system-list button[aria-pressed='true'] .idx {
+  color: var(--freight);
+}
+.system-detail {
+  padding: clamp(18px, 2.4vw, 28px);
+}
+.system-detail .h3 {
+  margin: 6px 0 10px;
+}
+.system-summary {
+  color: var(--text);
+  font-weight: 500;
+}
+.system-status {
+  margin-top: 16px;
+  padding-top: 14px;
+  border-top: 1px solid var(--line);
+  color: var(--text-2);
+}
+.system-status .label {
+  margin-right: 8px;
+}
+
+/* SVG parts */
+.cutaway svg text {
+  font-family: var(--font-mono);
+}
+.tc-small {
+  font-size: 13px;
+  fill: var(--text-3);
+}
+.muted-text {
+  fill: var(--text-3);
+  opacity: 0.8;
+}
+.tc-part {
+  transition: opacity 0.35s var(--ease);
+  opacity: 0.5;
+}
+.tc-part.on {
+  opacity: 1;
+}
+.tc-structure {
+  fill: none;
+  stroke: #3a4652;
+  stroke-width: 1.5;
+}
+.tc-part.on .tc-structure {
+  stroke: var(--freight);
+}
+.tc-cargo {
+  fill: #141a21;
+  stroke: #3a4652;
+}
+.tc-cargo-box {
+  fill: #26303b;
+  stroke: #4a5866;
+  stroke-width: 1;
+}
+.tc-airlock {
+  fill: #0f141a;
+  stroke: #46535f;
+  stroke-width: 1.5;
+  stroke-dasharray: 4 3;
+}
+.tc-part.on .tc-airlock {
+  stroke: var(--freight);
+}
+.tc-door {
+  stroke: var(--text-2);
+  stroke-width: 4;
+}
+.tc-pod-ghost {
+  fill: none;
+  stroke: #5a6876;
+  stroke-dasharray: 3 3;
+}
+.tc-tube {
+  stroke: #3a4652;
+  stroke-width: 2;
+}
+.tc-part.on .tc-tube {
+  stroke: var(--freight);
+}
+.tc-tube-cut {
+  stroke: rgba(255, 255, 255, 0.06);
+  stroke-width: 1;
+}
+.tc-support {
+  fill: #1a2129;
+  stroke: #3a4652;
+}
+.tc-guideway {
+  stroke: #4a5866;
+  stroke-width: 3;
+}
+.tc-guideway.thin {
+  stroke-width: 1.5;
+  stroke-dasharray: 2 4;
+}
+.tc-stator {
+  fill: #2b3642;
+}
+.tc-part.on .tc-stator {
+  fill: var(--freight);
+}
+.tc-pod {
+  fill: #dfe5ea;
+  stroke: #fff;
+}
+.tc-part.on .tc-pod {
+  fill: #f3f6f8;
+  filter: drop-shadow(0 0 10px rgba(63, 216, 240, 0.5));
+}
+.tc-pod-nose {
+  fill: none;
+  stroke: var(--freight);
+  stroke-width: 2;
+}
+.tc-pod .tc-cargo-box,
+.tc-pod-move .tc-cargo-box {
+  fill: #9aa7b3;
+  stroke: #6b7885;
+}
+.tc-equip {
+  fill: #141a21;
+  stroke: #3a4652;
+  stroke-width: 1.5;
+}
+.tc-part.on .tc-equip {
+  stroke: var(--freight);
+}
+.tc-equip-detail {
+  fill: none;
+  stroke: #4a5866;
+  stroke-width: 1.5;
+}
+.tc-pipe {
+  stroke: #4a5866;
+  stroke-width: 6;
+  fill: none;
+}
+.tc-flow {
+  fill: none;
+  stroke: var(--text-2);
+  stroke-width: 1.5;
+}
+.tc-bolt {
+  fill: none;
+  stroke: var(--passenger);
+  stroke-width: 2.5;
+  stroke-linejoin: round;
+}
+.tc-cable {
+  stroke: #4a5866;
+  stroke-width: 2;
+  stroke-dasharray: 4 3;
+  fill: none;
+}
+.tc-part.on .tc-cable {
+  stroke: var(--passenger);
+}
+.tc-sensor {
+  fill: var(--text-2);
+}
+.tc-part.on .tc-sensor {
+  fill: var(--freight);
+}
+.tc-wave {
+  fill: none;
+  stroke: #4a5866;
+  stroke-width: 1.5;
+}
+.tc-part.on .tc-wave {
+  stroke: var(--freight);
+}
+.tc-access {
+  fill: #141a21;
+  stroke: #3a4652;
+}
+.tc-ladder {
+  stroke: #4a5866;
+}
+.tc-robot {
+  fill: #2b3642;
+  stroke: #6b7885;
+}
+.tc-part.on .tc-robot {
+  fill: var(--passenger);
+}
+.tc-robot-wheel {
+  fill: #6b7885;
+}
+.tc-valve {
+  fill: #2b3642;
+  stroke: #6b7885;
+}
+.tc-part.on .tc-valve {
+  fill: var(--negative);
+  stroke: var(--negative);
+}
+.tc-valve-head {
+  fill: #141a21;
+  stroke: #6b7885;
+  stroke-width: 2;
+}
+.tc-marker {
+  cursor: pointer;
+}
+.tc-marker circle {
+  fill: var(--bg);
+  stroke: var(--text-3);
+  stroke-width: 1.5;
+  transition:
+    fill 0.2s,
+    stroke 0.2s;
+}
+.tc-marker text {
+  font-size: 13px;
+  font-weight: 500;
+  fill: var(--text-2);
+}
+.tc-marker:hover circle {
+  stroke: var(--text);
+}
+.tc-marker.on circle {
+  fill: var(--freight);
+  stroke: var(--freight);
+}
+.tc-marker.on text {
+  fill: var(--freight-ink);
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .tc-part.on .tc-pod-move {
+    animation: tc-glide 1.8s var(--ease) 2 alternate;
+  }
+}
+@keyframes tc-glide {
+  from {
+    transform: translateX(-30px);
+  }
+  to {
+    transform: translateX(30px);
+  }
+}

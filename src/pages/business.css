@@ -1,0 +1,210 @@
+.bp-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  padding-top: clamp(40px, 6vw, 72px);
+  padding-bottom: clamp(56px, 8vw, 120px);
+}
+@media (min-width: 1100px) {
+  .bp-layout {
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 64px;
+  }
+}
+.bp-toc {
+  display: none;
+}
+@media (min-width: 1100px) {
+  .bp-toc {
+    display: block;
+    position: sticky;
+    top: calc(var(--header-h) + 24px);
+    align-self: start;
+    max-height: calc(100vh - var(--header-h) - 48px);
+    overflow-y: auto;
+  }
+}
+.bp-toc ol {
+  list-style: none;
+  margin-top: 12px;
+  border-left: 1px solid var(--line);
+}
+.bp-toc a {
+  display: block;
+  padding: 5px 0 5px 14px;
+  margin-left: -1px;
+  border-left: 1px solid transparent;
+  color: var(--text-3);
+  text-decoration: none;
+  font-size: 0.86rem;
+  line-height: 1.35;
+}
+.bp-toc a .mono {
+  font-size: 0.7rem;
+  margin-right: 6px;
+}
+.bp-toc a:hover {
+  color: var(--text);
+}
+.bp-toc a[aria-current='true'] {
+  color: var(--text);
+  border-left-color: var(--freight);
+}
+.bp-content {
+  min-width: 0;
+}
+.bp-block {
+  padding: clamp(40px, 5vw, 64px) 0;
+  border-bottom: 1px solid var(--line);
+  scroll-margin-top: calc(var(--header-h) + 12px);
+}
+.bp-block:first-child {
+  padding-top: 0;
+}
+.bp-block:last-child {
+  border-bottom: 0;
+}
+.bp-title {
+  max-width: 24ch;
+  margin-bottom: 22px;
+}
+.bp-lead {
+  margin-bottom: 28px;
+}
+.bp-sub {
+  margin: 28px 0 12px;
+}
+.bp-products {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 20px;
+}
+@media (min-width: 800px) {
+  .bp-products {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.bp-product {
+  padding: 24px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--freight);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 12px;
+  align-content: start;
+}
+.bp-product.passenger {
+  border-top: 3px dashed var(--passenger);
+}
+.segment-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  border-top: 1px solid var(--line);
+}
+.segment {
+  padding: 20px 20px 4px 0;
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.funnel {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+}
+.funnel li {
+  display: grid;
+  gap: 16px;
+  align-items: start;
+}
+@media (min-width: 800px) {
+  .funnel li {
+    grid-template-columns: 280px minmax(0, 1fr);
+  }
+}
+.funnel-bar {
+  height: 52px;
+  width: calc(100% - var(--i) * 18%);
+  margin: 0 auto;
+  border-radius: 3px;
+  background: linear-gradient(90deg, rgba(63, 216, 240, 0.12), rgba(63, 216, 240, 0.4));
+  border: 1px solid rgba(63, 216, 240, 0.5);
+}
+.funnel-text {
+  display: grid;
+  gap: 4px;
+}
+.funnel-text p {
+  margin: 0;
+}
+.funnel-text .label {
+  margin-right: 6px;
+}
+.comp-table {
+  margin-top: 20px;
+  min-width: 720px;
+}
+.comp-table th[scope='row'] {
+  font-weight: 600;
+  white-space: nowrap;
+}
+.takeaways {
+  list-style: none;
+  display: grid;
+  gap: 10px;
+  margin-top: 24px;
+  color: var(--text-2);
+  font-size: 0.94rem;
+}
+.takeaways strong {
+  color: var(--text);
+}
+.projects {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px;
+}
+@media (min-width: 800px) {
+  .projects {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+.project {
+  padding: 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 8px;
+  align-content: start;
+}
+.project p {
+  margin: 0;
+}
+.sales-steps {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  border-top: 1px solid var(--line);
+}
+.sales-steps li {
+  display: grid;
+  gap: 6px;
+  padding: 20px 20px 8px 0;
+  align-content: start;
+}
+.equipment {
+  list-style: none;
+  margin-top: 20px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+}
+.equipment li {
+  background: var(--bg);
+  padding: 16px;
+  display: grid;
+  gap: 4px;
+  align-content: start;
+}
+.equipment p {
+  margin: 0;
+}
