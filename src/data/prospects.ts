@@ -7,59 +7,76 @@ export type Prospect = {
   name: string
   type: string
   potentialRole: string
-  rationale: string
+  /** Why the organisation's logistics activity is relevant. */
+  fit: string
+  /** What AXION would ask for in a first conversation. */
+  request: string
+  /** What AXION would aim to offer in return. */
+  benefit: string
   note?: { text: string; sourceId: string }
 }
 
 export const prospectsNotice =
-  'Outreach targets only. AXION has not contacted these organisations, and none has endorsed, invested in, or entered any agreement or conversation with AXION.'
+  'Prospects only. AXION has not contacted these organisations, and none has endorsed, invested in, or entered any agreement or conversation with AXION.'
 
 export const prospects: Prospect[] = [
+  {
+    id: 'dhl',
+    name: 'DHL',
+    type: 'Express and logistics',
+    potentialRole: 'Potential customer and integration partner',
+    fit: 'Runs express and contract-logistics networks in both Singapore and Malaysia, with time-sensitive parcels and parts moving between them.',
+    request: 'Anonymised Singapore–KL shipment patterns and an interview on time, reliability and price thresholds.',
+    benefit: 'A route-specific analysis of where reserved Hyperloop capacity could shorten complete delivery time on its network.',
+  },
   {
     id: 'amazon',
     name: 'Amazon',
     type: 'E-commerce and logistics',
     potentialRole: 'Potential customer and strategic-investment prospect',
-    rationale: 'Operates large parcel flows between fulfilment and sortation centres where trunk-haul time matters.',
+    fit: 'Operates large parcel flows between fulfilment and sortation sites, where trunk-haul time and reliability affect delivery promises.',
+    request: 'Insight into trunk-haul requirements and the price at which reserved capacity would be considered.',
+    benefit: 'Early influence over terminal design and capacity terms, if the programme proceeds.',
   },
   {
     id: 'cainiao',
     name: 'Cainiao',
     type: 'E-commerce logistics',
     potentialRole: 'Potential e-commerce logistics customer or partner',
-    rationale: 'E-commerce logistics network with significant parcel volumes in Phase 1 markets.',
-  },
-  {
-    id: 'dhl',
-    name: 'DHL',
-    type: 'Express and logistics',
-    potentialRole: 'Potential customer and integration partner',
-    rationale: 'Express and contract-logistics operations could integrate AXION terminals into existing collection and delivery networks.',
+    fit: 'E-commerce logistics with significant parcel volumes in China and Southeast Asia, which is relevant to the wider Phase 1 vision.',
+    request: 'A discussion of cross-border parcel flows and customs-integration needs in Southeast Asia.',
+    benefit: 'Shared research on cross-border terminal processes that could apply to future corridors.',
   },
   {
     id: 'dp-world',
     name: 'DP World',
     type: 'Ports and logistics',
     potentialRole: 'Potential terminal or strategic-investment prospect',
-    rationale: 'Port and terminal operations experience relevant to AXION terminal design and operation.',
+    fit: 'Port and terminal operating experience is directly relevant to AXION terminal design, handling and operations.',
+    request: 'Expert review of terminal throughput, airlock handling assumptions and terminal costs.',
+    benefit: 'Access to a feasibility programme in a market adjacent to its port and logistics interests.',
     note: {
-      text: 'Reported as a backer of Hyperloop One, which ceased operations at the end of 2023 — relevant context for any discussion.',
+      text: 'DP World was reported as a backer of Hyperloop One, which ceased operations at the end of 2023. That history is relevant to any discussion.',
       sourceId: 'fortune-hyperloop-one',
     },
   },
   {
     id: 'hyperloop-developers',
-    name: 'Specialist Hyperloop and infrastructure developers',
+    name: 'Specialist hyperloop developers and test facilities',
     type: 'Engineering',
-    potentialRole: 'Potential engineering partners',
-    rationale: 'AXION would license or co-develop technology with specialists rather than build every system alone.',
+    potentialRole: 'Potential technology and testing partners',
+    fit: 'AXION would license or co-develop systems rather than build every component; existing test facilities may host trials.',
+    request: 'Technical data, test access and licensing terms for pods, propulsion and switching.',
+    benefit: 'A freight operator case and customer requirements that test their technology commercially.',
   },
   {
     id: 'infrastructure-investors',
-    name: 'Infrastructure investors and governments',
+    name: 'Infrastructure investors, lenders and governments',
     type: 'Finance and public sector',
     potentialRole: 'Possible later financing and coordination participants',
-    rationale: 'Construction-scale financing, land and cross-border coordination would require public and institutional participation.',
+    fit: 'First-corridor construction would need institutional capital and, the model suggests, public infrastructure funding.',
+    request: 'Early views on the conditions under which construction finance or public support could ever be considered.',
+    benefit: 'A transparent, gated evidence base before any construction decision is asked of them.',
   },
 ]
 

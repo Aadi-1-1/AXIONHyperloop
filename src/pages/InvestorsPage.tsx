@@ -1,22 +1,19 @@
 import { useState } from 'react'
-import ScrollLink from '../components/ScrollLink'
 import { Link } from 'react-router-dom'
+import ScrollLink from '../components/ScrollLink'
 import { Eyebrow, PageHeader, SourceRef } from '../components/common'
-import { AllocationChart, CashFlowChart, FinancingChallenge, LabourNote, StaffingChart } from '../features/finance/ProgrammeCharts'
+import { AllocationChart, CashFlowChart, LabourNote, StaffingChart } from '../features/finance/ProgrammeCharts'
+import FundingLadder, { TrancheTable } from '../features/finance/FundingLadder'
+import { FundingStructure } from '../features/finance/CorridorModel'
 import Gates from '../features/programme/Gates'
 import EnquiryForm from '../features/enquiry/EnquiryForm'
 import { developmentProgramme } from '../data/finance'
-import { feasibilityGates } from '../data/technology'
+import { centralInputs } from '../data/corridorModel'
+import { phaseExplainer } from '../data/network'
 import { risks } from '../data/company'
-import {
-  investorCategories,
-  investorPath,
-  partnerPaths,
-  prospects,
-  prospectsNotice,
-  type PartnerPathId,
-} from '../data/prospects'
-import { constructionCost, usdCompact } from '../lib/finance'
+import { investorCategories, investorPath, partnerPaths, prospects, prospectsNotice, type PartnerPathId } from '../data/prospects'
+import { runCorridorModel } from '../lib/corridorModel'
+import { usdCompact, usdPerKg } from '../lib/finance'
 import { usePageTitle } from '../lib/hooks'
 import './pages.css'
 import './investors.css'
@@ -24,21 +21,24 @@ import './investors.css'
 export default function InvestorsPage() {
   usePageTitle('For Investors')
   const [path, setPath] = useState<PartnerPathId>('investment')
-  const cc = constructionCost()
   const active = partnerPaths.find((p) => p.id === path)!
+  const lead = runCorridorModel(centralInputs)
 
   return (
     <>
       <PageHeader
         eyebrow="For Investors"
         title={`${usdCompact(developmentProgramme.askUsd)} to reach an evidence-based construction decision.`}
-        lead="A three-year feasibility and demonstration programme. Funds are spent against five decision gates, and the programme can be redesigned or stopped if the evidence is weak."
+        lead="The development round funds a three-year feasibility and demonstration programme, centred on the Singapore–Kuala Lumpur lead study corridor. It does not fund construction. Money is drawn in tranches against decision gates."
       >
         <div className="cluster" style={{ marginTop: 28 }}>
           <Link to="/present/ask" className="btn btn-primary">
-            Start presentation at the funding ask <span className="arrow" aria-hidden="true">→</span>
+            Presentation: funding ask <span className="arrow" aria-hidden="true">→</span>
           </Link>
-          <ScrollLink target="enquire" className="btn">
+          <ScrollLink target="funding-ladder" className="btn">
+            Funding ladder
+          </ScrollLink>
+          <ScrollLink target="enquire" className="btn btn-ghost">
             Partner &amp; investor paths
           </ScrollLink>
         </div>
@@ -52,52 +52,44 @@ export default function InvestorsPage() {
             <dd className="figure-num">3 years</dd>
           </div>
           <div>
-            <dt className="label">Team</dt>
-            <dd className="figure-num">30</dd>
+            <dt className="label">Drawn in</dt>
+            <dd className="figure-num">3 tranches</dd>
           </div>
           <div>
-            <dt className="label">Revenue assumed</dt>
-            <dd className="figure-num">$0</dd>
+            <dt className="label">First corridor, if built</dt>
+            <dd className="figure-num">≈${(lead.capex.total / 1e9).toFixed(0)}bn</dd>
           </div>
         </dl>
       </PageHeader>
 
-      <section className="section" aria-labelledby="buys-title">
+      <section className="section" id="funding-ladder" aria-labelledby="ladder-title">
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="01">What the funding buys</Eyebrow>
-              <h2 className="h2" id="buys-title">
-                Evidence, a demonstrator and a decision.
+              <Eyebrow index="01">Funding ladder</Eyebrow>
+              <h2 className="h2" id="ladder-title">
+                $50m now. Construction finance only if the evidence supports it.
               </h2>
             </div>
-            <p className="body-2">
-              The round funds feasibility and demonstration only. It does not fund construction or passenger development.
-            </p>
+            <div className="stack">
+              <p className="body-2">
+                Each rung needs its own decision and its own investors. This round buys the evidence for rung 2; it does not commit
+                anyone to fund it.
+              </p>
+              <p className="small muted">{phaseExplainer}</p>
+            </div>
           </div>
-          <ol className="buys ruled-grid">
-            {feasibilityGates.map((g) => (
-              <li key={g.id}>
-                <span className="mono step-idx">Gate {g.index} · {g.timing}</span>
-                <h3 className="h4">{g.name}</h3>
-                <ul className="bullets small">
-                  {g.deliverables.map((d) => (
-                    <li key={d}>{d}</li>
-                  ))}
-                </ul>
-              </li>
-            ))}
-          </ol>
+          <FundingLadder />
         </div>
       </section>
 
-      <section className="section" aria-labelledby="alloc-title">
+      <section className="section" id="programme" aria-labelledby="alloc-title">
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="02">Allocation</Eyebrow>
+              <Eyebrow index="02">The $50m programme</Eyebrow>
               <h2 className="h2" id="alloc-title">
-                Where each dollar goes.
+                Where each dollar goes, and when it is drawn.
               </h2>
             </div>
             <LabourNote />
@@ -106,22 +98,17 @@ export default function InvestorsPage() {
             <AllocationChart showDetail={false} />
             <StaffingChart />
           </div>
-        </div>
-      </section>
-
-      <section className="section" aria-labelledby="cf-title">
-        <div className="container grid-2">
-          <div>
-            <Eyebrow index="03">Three-year cash flow</Eyebrow>
-            <h2 className="h2" id="cf-title">
-              Spending rises as testing begins.
-            </h2>
-            <p className="body-2" style={{ marginTop: 20 }}>
-              Year 1 concentrates on customer and route studies; Years 2 and 3 fund the test facility, prototype equipment and the
-              terminal demonstration. Cash reaches zero at the end of Year 3.
-            </p>
+          <div className="inv-cash">
+            <div>
+              <h3 className="h3">Committed at close, drawn in tranches</h3>
+              <p className="body-2 small">Investors commit $50m at close. Cash is drawn in three tranches, each released when a gate is passed.</p>
+              <TrancheTable />
+            </div>
+            <div>
+              <h3 className="h3">Cash position if paid in full at close</h3>
+              <CashFlowChart showTable={false} />
+            </div>
           </div>
-          <CashFlowChart />
         </div>
       </section>
 
@@ -129,14 +116,36 @@ export default function InvestorsPage() {
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="04">Milestone gates</Eyebrow>
+              <Eyebrow index="03">Milestone gates</Eyebrow>
               <h2 className="h2" id="gates-title">
                 Five gates. Each one can stop the programme.
               </h2>
             </div>
-            <p className="body-2">Funding could be released in tranches against these gates, to be agreed in funding terms.</p>
+            <p className="body-2">Gates 1 and 2 release tranches 2 and 3. Gate 5 is the decision on whether to seek construction finance at all.</p>
           </div>
-          <Gates showDeliverables={false} />
+          <Gates />
+        </div>
+      </section>
+
+      <section className="section" id="first-corridor" aria-labelledby="fc-title">
+        <div className="container grid-2">
+          <div>
+            <Eyebrow index="04">First-corridor construction finance</Eyebrow>
+            <h2 className="h2" id="fc-title">
+              A much larger, conditional question.
+            </h2>
+            <p className="body-2" style={{ marginTop: 20 }}>
+              In the central Singapore–Kuala Lumpur scenario, construction is about ${(lead.capex.total / 1e9).toFixed(1)}bn. At the
+              assumed {usdPerKg(centralInputs.pricePerKg)}, freight revenue covers operations but not construction. Full capital
+              recovery would need about {usdPerKg(lead.requiredPrice.fullCapitalRecovery ?? 0)}. Unless costs, prices or public
+              infrastructure funding change materially, Gate 5 would not support construction.
+            </p>
+            <p className="small muted">No valuation, equity offer, investor return or payback date is presented.</p>
+            <Link to="/business#corridor-model" className="btn" style={{ marginTop: 12 }}>
+              Explore the scenario model
+            </Link>
+          </div>
+          <FundingStructure r={lead} />
         </div>
       </section>
 
@@ -144,70 +153,54 @@ export default function InvestorsPage() {
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="05">Desired investors &amp; partners</Eyebrow>
+              <Eyebrow index="05">Prospective partners</Eyebrow>
               <h2 className="h2" id="who-title">
-                Who we would approach.
+                Who we would approach, and why.
               </h2>
             </div>
             <p className="notice warn small">
-              <span>
-                <strong>Outreach targets only.</strong> {prospectsNotice}
-              </span>
+              <span>{prospectsNotice}</span>
             </p>
           </div>
-          <div className="who-grid">
-            <div>
-              <h3 className="label" style={{ marginBottom: 12 }}>
-                Investor and partner categories
-              </h3>
-              <ul className="cat-list">
-                {investorCategories.map((c) => (
-                  <li key={c.title}>
-                    <h4 className="h4">{c.title}</h4>
-                    <p className="small body-2">{c.body}</p>
-                  </li>
-                ))}
-              </ul>
-            </div>
-            <div>
-              <h3 className="label" style={{ marginBottom: 12 }}>
-                Prospective organisations
-              </h3>
-              <div className="table-scroll" tabIndex={0}>
-                <table className="data-table prospects-table">
-                  <caption className="visually-hidden">Prospective organisations — outreach targets, not partners</caption>
-                  <thead>
-                    <tr>
-                      <th scope="col">Organisation</th>
-                      <th scope="col">Potential role</th>
-                      <th scope="col">Status</th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {prospects.map((p) => (
-                      <tr key={p.id}>
-                        <th scope="row">
-                          {p.name}
-                          <span className="small muted prospect-type">{p.type}</span>
-                        </th>
-                        <td>
-                          {p.potentialRole}
-                          <span className="small muted prospect-why">{p.rationale}</span>
-                          {p.note && (
-                            <span className="small muted prospect-why">
-                              {p.note.text} <SourceRef id={p.note.sourceId} />
-                            </span>
-                          )}
-                        </td>
-                        <td>
-                          <span className="chip">Not contacted</span>
-                        </td>
-                      </tr>
-                    ))}
-                  </tbody>
-                </table>
+          <ul className="prospect-list">
+            {prospects.map((p) => (
+              <li key={p.id} className="prospect">
+                <div className="prospect-head">
+                  <h3 className="h4">{p.name}</h3>
+                  <span className="chip">Prospect · not contacted</span>
+                </div>
+                <p className="small muted">
+                  {p.type} · {p.potentialRole}
+                </p>
+                <dl className="prospect-dl small">
+                  <div>
+                    <dt>Logistics fit</dt>
+                    <dd>{p.fit}</dd>
+                  </div>
+                  <div>
+                    <dt>AXION would ask</dt>
+                    <dd>{p.request}</dd>
+                  </div>
+                  <div>
+                    <dt>AXION would offer</dt>
+                    <dd>{p.benefit}</dd>
+                  </div>
+                </dl>
+                {p.note && (
+                  <p className="small muted">
+                    {p.note.text} <SourceRef id={p.note.sourceId} />
+                  </p>
+                )}
+              </li>
+            ))}
+          </ul>
+          <div className="cat-row">
+            {investorCategories.map((c) => (
+              <div key={c.title}>
+                <h3 className="h4">{c.title}</h3>
+                <p className="small body-2">{c.body}</p>
               </div>
-            </div>
+            ))}
           </div>
         </div>
       </section>
@@ -218,14 +211,10 @@ export default function InvestorsPage() {
             <div>
               <Eyebrow index="06">Risks</Eyebrow>
               <h2 className="h2" id="risk-title">
-                Commercial and technical risk, unhidden.
+                Commercial and technical risk, stated plainly.
               </h2>
             </div>
             <p className="body-2">
-              <Link to="/business#risks" className="text-link">
-                Full risk register
-              </Link>{' '}
-              ·{' '}
               <Link to="/evidence" className="text-link">
                 Evidence &amp; assumptions
               </Link>
@@ -243,31 +232,11 @@ export default function InvestorsPage() {
         </div>
       </section>
 
-      <section className="section" aria-labelledby="fin-title">
-        <div className="container grid-2">
-          <div>
-            <Eyebrow index="07">Future construction financing</Eyebrow>
-            <h2 className="h2" id="fin-title">
-              After this round, a much larger question.
-            </h2>
-            <p className="body-2" style={{ marginTop: 20 }}>
-              Building even the hypothetical 100 km freight corridor is illustrated at {usdCompact(cc.total)} — {Math.round(cc.total / developmentProgramme.askUsd)} times this round.
-              That would require infrastructure investors, lenders and likely public participation. AXION does not present a
-              valuation, equity offer, investor return or payback date.
-            </p>
-            <Link to="/business#construction" className="text-link">
-              See the construction illustration
-            </Link>
-          </div>
-          <FinancingChallenge />
-        </div>
-      </section>
-
       <section className="section" id="enquire" aria-labelledby="path-title">
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="08">Next steps</Eyebrow>
+              <Eyebrow index="07">Next steps</Eyebrow>
               <h2 className="h2" id="path-title">
                 The investor path.
               </h2>
@@ -315,7 +284,7 @@ export default function InvestorsPage() {
           <h2 className="h3" id="present-title">
             Presenting AXION? Open the full-screen investor presentation.
           </h2>
-          <Link to="/present/vision" className="btn btn-primary">
+          <Link to="/present/problem" className="btn btn-primary">
             Start Investor Presentation <span className="arrow" aria-hidden="true">→</span>
           </Link>
         </div>

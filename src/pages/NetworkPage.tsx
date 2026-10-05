@@ -5,7 +5,7 @@ import TechCutaway from '../features/tech/TechCutaway'
 import Gates from '../features/programme/Gates'
 import { Eyebrow, KindTag, PageHeader, SourceRef } from '../components/common'
 import { technologyStatus } from '../data/evidence'
-import { corridorExample } from '../data/finance'
+import { phaseExplainer } from '../data/network'
 import { usePageTitle } from '../lib/hooks'
 import './pages.css'
 
@@ -37,7 +37,7 @@ export default function NetworkPage() {
       <PageHeader
         eyebrow="Network & Technology"
         title="A network, built one proven corridor at a time."
-        lead="Explore the proposed geographic phases, candidate corridors and the separate freight and passenger systems. Every city is a planning assumption and every arc a proposed connection — not a surveyed route."
+        lead="Inspect each regional network, focus on a single corridor, trace a journey between any two cities, or step back to the long-term global vision. Cities are planning assumptions and lines are proposed connections, not surveyed routes."
       >
         <div className="cluster" style={{ marginTop: 28 }}>
           <ScrollLink target="explorer" className="btn btn-primary">
@@ -58,25 +58,33 @@ export default function NetworkPage() {
             <div>
               <Eyebrow index="01">Network explorer</Eyebrow>
               <h2 className="h2" id="explorer-title">
-                Three phases of ambition. No launch route chosen.
+                Start with Singapore–Kuala Lumpur. Expand only on evidence.
               </h2>
             </div>
             <p className="body-2">
-              Phase 1 contains three candidate corridors to be compared during the feasibility programme. Regional expansion
-              would only follow a proven first corridor. Dotted connections are long-term concepts with unresolved crossings.
+              The proposed lead study corridor is Singapore–Kuala Lumpur, and its feasibility is unverified. Tokyo–Osaka and
+              Shanghai–Shenzhen would be studied alongside it for comparison. Dashed lines are later regional expansion; dotted
+              lines are long-term concepts with unresolved crossings.
             </p>
           </div>
           <NetworkExplorer />
-          <p className="notice info small" style={{ marginTop: 20 }}>
-            <span>
-              <strong>Separate from the financial example.</strong> The business model uses a hypothetical{' '}
-              {corridorExample.lengthKm} km corridor that is not any of the routes shown here.{' '}
-              <Link className="text-link" to="/business#construction">
-                See the construction illustration
-              </Link>
-              .
-            </span>
-          </p>
+          <div className="phase-funding">
+            <div>
+              <p className="label">Geographic phases</p>
+              <p className="body-2 small">{phaseExplainer}</p>
+            </div>
+            <div>
+              <p className="label">Funding stages</p>
+              <p className="body-2 small">
+                Money moves in separate steps: the $50m development round, then conditional construction finance for the first
+                corridor, then separately funded passenger and regional programmes.{' '}
+                <Link className="text-link" to="/investors#funding-ladder">
+                  See the funding ladder
+                </Link>
+                .
+              </p>
+            </div>
+          </div>
         </div>
       </section>
 

@@ -3,14 +3,10 @@ import ScrollLink from '../components/ScrollLink'
 import { Link } from 'react-router-dom'
 import { KindTag, PageHeader, SourceRef, SystemChip } from '../components/common'
 import OperatingExplorer from '../features/finance/OperatingExplorer'
-import {
-  AllocationChart,
-  CashFlowChart,
-  ConstructionTable,
-  FinancingChallenge,
-  LabourNote,
-  StaffingChart,
-} from '../features/finance/ProgrammeCharts'
+import { ConstructionTable, FinancingChallenge, StaffingChart } from '../features/finance/ProgrammeCharts'
+import CorridorModel from '../features/finance/CorridorModel'
+import { centralInputs } from '../data/corridorModel'
+import { runCorridorModel } from '../lib/corridorModel'
 import {
   company,
   competition,
@@ -26,8 +22,10 @@ import {
   salesSteps,
   sustainability,
 } from '../data/company'
-import { corridorExample, developmentProgramme, operatingDefaults } from '../data/finance'
-import { usdCompact, usdPerKg } from '../lib/finance'
+import { corridorExample } from '../data/finance'
+import { usdPerKg } from '../lib/finance'
+
+const leadCentral = runCorridorModel(centralInputs)
 import { usePageTitle } from '../lib/hooks'
 import './pages.css'
 import './business.css'
@@ -36,20 +34,17 @@ const toc = [
   { id: 'description', label: 'Business description' },
   { id: 'organisation', label: 'Organisation & location' },
   { id: 'products', label: 'Products & services' },
-  { id: 'customers', label: 'Target customers' },
+  { id: 'customers', label: 'Who pays' },
   { id: 'market', label: 'Market analysis' },
   { id: 'competition', label: 'Competition' },
   { id: 'pricing', label: 'Pricing' },
   { id: 'sales', label: 'Sales & marketing' },
   { id: 'operations', label: 'Operations & equipment' },
   { id: 'people', label: 'Human resources' },
-  { id: 'development-costs', label: 'Development costs' },
-  { id: 'construction', label: 'Construction illustration' },
-  { id: 'operating-model', label: 'Financial scenarios' },
-  { id: 'cash-flow', label: 'Cash flow' },
-  { id: 'financing-challenge', label: 'Financing challenge' },
+  { id: 'corridor-model', label: 'Lead corridor economics' },
   { id: 'sustainability', label: 'Sustainability' },
   { id: 'risks', label: 'Risks & expansion' },
+  { id: 'teaching-example', label: 'Reference: 100 km example' },
 ]
 
 function Block({ id, n, title, children, lead }: { id: string; n: number; title: string; lead?: ReactNode; children: ReactNode }) {
@@ -98,15 +93,15 @@ export default function BusinessPage() {
       <PageHeader
         eyebrow="Business Model"
         title="The business plan, in the open."
-        lead="What AXION would sell, to whom, how it would operate, what it would cost — and where the case is weakest. All figures are illustrative classroom assumptions in USD."
+        lead="What AXION would sell, who would pay, how a corridor would operate, what it would cost and where the case is weakest. Figures are illustrative assumptions in USD."
       >
         <div className="cluster" style={{ marginTop: 28 }}>
-          <ScrollLink target="operating-model" className="btn btn-primary">
-            Operating explorer <span className="arrow" aria-hidden="true">→</span>
+          <ScrollLink target="corridor-model" className="btn btn-primary">
+            Lead corridor economics <span className="arrow" aria-hidden="true">→</span>
           </ScrollLink>
-          <ScrollLink target="financing-challenge" className="btn">
-            The financing challenge
-          </ScrollLink>
+          <Link to="/investors#funding-ladder" className="btn">
+            Funding ladder
+          </Link>
           <Link to="/evidence" className="btn btn-ghost">
             Evidence &amp; assumptions
           </Link>
@@ -178,7 +173,10 @@ export default function BusinessPage() {
             </div>
           </Block>
 
-          <Block id="customers" n={4} title="Time-sensitive, relatively high-value goods.">
+          <Block id="customers" n={4} title="Logistics companies pay for reserved capacity.">
+            <p className="body-2">
+              AXION’s customers would be logistics providers and large shippers. They would buy reserved terminal-to-terminal capacity and keep their own collection and delivery. The goods inside are time-sensitive and relatively high-value:
+            </p>
             <div className="segment-grid">
               {customerSegments.map((s, i) => (
                 <div key={s.title} className="segment">
@@ -257,34 +255,37 @@ export default function BusinessPage() {
             <h3 className="label bp-sub">Existing Hyperloop projects</h3>
             <div className="projects">
               <article className="project">
-                <h4 className="h4">Forge Hyperloop</h4>
-                <p className="small body-2">
-                  An independent Hyperloop project and the principal design reference for this website. Its site could not be
-                  reached from our research environment, so we present no facts or claims about it.
-                </p>
-                <p className="small">
-                  <SourceRef id="forge-hyperloop" />
-                </p>
-              </article>
-              <article className="project">
                 <h4 className="h4">Hardt Hyperloop</h4>
                 <p className="small body-2">
-                  A Dutch developer reporting a roughly 420 m test facility with a lane switch in Veendam, the Netherlands, first
-                  low-speed vehicle tests in 2024 and cargo-focused concept studies. These are developer statements relayed by media
-                  and partners — not independent verification.
+                  Reported an 85 km/h run with a lane switch on the 420 m European Hyperloop Center track in September 2025, and
+                  studied cargo applications. It was declared bankrupt in March 2026; the test centre is a separate entity.
                 </p>
                 <p className="small cluster" style={{ ['--gap' as string]: '10px' }}>
-                  <SourceRef id="techeu-ehc-opens" /> <SourceRef id="ap-hardt-test" /> <SourceRef id="freshplaza-hardt-cargo" />
+                  <SourceRef id="hardt-lane-switch-2025" /> <SourceRef id="hardt-bankrupt-2026" />
                 </p>
               </article>
               <article className="project">
-                <h4 className="h4">A sector lesson</h4>
-                <p className="small body-2">
-                  Hyperloop One, once among the best-funded developers, ceased operations at the end of 2023 without a contract to
-                  build a working system. AXION’s gated, freight-first plan is designed around that risk.
-                </p>
+                <h4 className="h4">Swisspod</h4>
+                <p className="small body-2">Reported 146 km/h with a full-scale capsule on its Colorado test track in May 2026, and is raising Series A funding.</p>
                 <p className="small">
-                  <SourceRef id="fortune-hyperloop-one" />
+                  <SourceRef id="swisspod-2026" />
+                </p>
+              </article>
+              <article className="project">
+                <h4 className="h4">Freight concepts and failures</h4>
+                <p className="small body-2">
+                  HHLA and HyperloopTT presented a container-freight concept. Hyperloop One closed in 2023 and Zeleros became insolvent
+                  in 2026. AXION’s gated plan is built around that record.
+                </p>
+                <p className="small cluster" style={{ ['--gap' as string]: '10px' }}>
+                  <SourceRef id="hhla-hyperport" /> <SourceRef id="fortune-hyperloop-one" /> <SourceRef id="zeleros-insolvency-2026" />
+                </p>
+              </article>
+              <article className="project">
+                <h4 className="h4">Forge Hyperloop</h4>
+                <p className="small body-2">An independent hyperloop project used as a design reference for this website. No facts or claims are drawn from it.</p>
+                <p className="small">
+                  <SourceRef id="forge-hyperloop" />
                 </p>
               </article>
             </div>
@@ -307,26 +308,24 @@ export default function BusinessPage() {
               </div>
               <dl className="kv-table">
                 <div>
-                  <dt>Average charge</dt>
+                  <dt>Pricing basis</dt>
+                  <dd>Per kilogram, terminal to terminal, averaged across reserved and additional capacity</dd>
+                </div>
+                <div>
+                  <dt>Central assumption</dt>
                   <dd className="mono">
-                    {usdPerKg(operatingDefaults.pricePerKg)} <KindTag kind="assumption" />
+                    {usdPerKg(centralInputs.pricePerKg)} <KindTag kind="assumption" />
                   </dd>
                 </div>
                 <div>
-                  <dt>Variable cost</dt>
+                  <dt>Needed to recover capital</dt>
                   <dd className="mono">
-                    {usdPerKg(operatingDefaults.variableCostPerKg)} <KindTag kind="assumption" />
-                  </dd>
-                </div>
-                <div>
-                  <dt>Contribution</dt>
-                  <dd className="mono">
-                    {usdPerKg(operatingDefaults.pricePerKg - operatingDefaults.variableCostPerKg)} <KindTag kind="calculated" />
+                    {usdPerKg(leadCentral.requiredPrice.fullCapitalRecovery ?? 0)} <KindTag kind="calculated" />
                   </dd>
                 </div>
                 <div>
                   <dt>To be tested</dt>
-                  <dd>Willingness to pay by segment, contract length, and premium for guaranteed capacity.</dd>
+                  <dd>Willingness to pay by segment, contract length and the premium for guaranteed capacity. No verified price benchmark exists yet.</dd>
                 </div>
               </dl>
             </div>
@@ -378,45 +377,24 @@ export default function BusinessPage() {
           </Block>
 
           <Block
-            id="development-costs"
+            id="corridor-model"
             n={11}
-            title={`${usdCompact(developmentProgramme.askUsd)} over three years.`}
-            lead="The development round funds feasibility and demonstration — not construction, and not passenger development."
+            title="Singapore–Kuala Lumpur: what a first corridor would need."
+            lead="A working scenario built from capacity, construction scope, operating costs, renewals and financing. Choose a scenario, then adjust the main levers."
           >
-            <AllocationChart />
-            <div style={{ marginTop: 20 }}>
-              <LabourNote />
-            </div>
-          </Block>
-
-          <Block id="construction" n={12} title={`A hypothetical ${corridorExample.lengthKm} km freight corridor.`}>
-            <p className="notice warn small" style={{ marginBottom: 24 }}>
+            <CorridorModel />
+            <p className="notice info small" style={{ marginTop: 24 }}>
               <span>
-                <strong>Illustration, not an engineering estimate.</strong> The scope and the {usdCompact(corridorExample.infrastructureCostPerKm)}/km
-                assumption are unvalidated. This corridor is not one of the routes on the network map, and its cost must not be
-                extended to the wider network.
+                The $50m development round is separate from construction finance.{' '}
+                <Link to="/investors#funding-ladder" className="text-link">
+                  See the funding ladder, tranches and allocation
+                </Link>
+                .
               </span>
             </p>
-            <ConstructionTable />
           </Block>
 
-          <Block id="operating-model" n={13} title="Operating scenario explorer.">
-            <p className="body-2">
-              Adjust utilisation, charge and variable cost for the hypothetical corridor. Annual kg = tonnes/day × 1,000 × operating
-              days × utilisation; revenue and variable costs scale with kg; fixed costs do not.
-            </p>
-            <OperatingExplorer />
-          </Block>
-
-          <Block id="cash-flow" n={14} title="Development cash flow.">
-            <CashFlowChart />
-          </Block>
-
-          <Block id="financing-challenge" n={15} title="The financing challenge, stated plainly.">
-            <FinancingChallenge />
-          </Block>
-
-          <Block id="sustainability" n={16} title="Lower emissions must be demonstrated, not assumed.">
+          <Block id="sustainability" n={12} title="Lower emissions must be demonstrated, not assumed.">
             <p className="body-2">{sustainability.summary}</p>
             <h3 className="label bp-sub">A lifecycle model must account for</h3>
             <ul className="bullets">
@@ -429,7 +407,7 @@ export default function BusinessPage() {
             </p>
           </Block>
 
-          <Block id="risks" n={17} title="What could stop AXION.">
+          <Block id="risks" n={13} title="What could stop AXION.">
             <div className="risk-grid ruled-grid">
               {risks.map((r) => (
                 <article key={r.title} className="risk">
@@ -450,6 +428,27 @@ export default function BusinessPage() {
               </Link>
             </div>
           </Block>
+
+          <Block
+            id="teaching-example"
+            n={14}
+            title={`Reference: a hypothetical ${corridorExample.lengthKm} km corridor.`}
+            lead="A simple teaching model kept from the first version. It is not a mapped route and not the commercial case; its unit costs are not scaled to the lead corridor."
+          >
+            <section id="construction" aria-label="100 km construction illustration">
+              <ConstructionTable />
+            </section>
+            <section id="operating-model" aria-label="100 km operating explorer" style={{ marginTop: 32 }}>
+              <p className="body-2">
+                Annual kg = tonnes/day × 1,000 × operating days × utilisation. Revenue and variable costs scale with kg; fixed costs do
+                not.
+              </p>
+              <OperatingExplorer />
+            </section>
+            <section id="financing-challenge" aria-label="100 km financing challenge" style={{ marginTop: 32 }}>
+              <FinancingChallenge />
+            </section>
+        </Block>
         </div>
       </div>
     </>

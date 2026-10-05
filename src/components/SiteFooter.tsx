@@ -1,7 +1,6 @@
 import { Link } from 'react-router-dom'
 import Logo from './Logo'
 import { company } from '../data/company'
-import { chapters } from '../data/presentation'
 
 export default function SiteFooter() {
   return (
@@ -30,7 +29,7 @@ export default function SiteFooter() {
                 <li><Link to="/network">Network explorer</Link></li>
                 <li><Link to="/network#technology">Technology</Link></li>
                 <li><Link to="/business">Business Model</Link></li>
-                <li><Link to="/business#operating-model">Operating explorer</Link></li>
+                <li><Link to="/business#corridor-model">Lead corridor economics</Link></li>
                 <li><Link to="/investors">For Investors</Link></li>
               </ul>
             </div>
@@ -38,9 +37,9 @@ export default function SiteFooter() {
               <p className="label">Presentation</p>
               <ul>
                 <li><Link to="/present/vision">Start from the beginning</Link></li>
-                <li><Link to={`/present/${chapters[3].slug}`}>Network chapter</Link></li>
-                <li><Link to={`/present/${chapters[7].slug}`}>Financial chapter</Link></li>
-                <li><Link to={`/present/${chapters[9].slug}`}>Funding ask</Link></li>
+                <li><Link to="/present/lead-corridor">Lead study corridor</Link></li>
+                <li><Link to="/present/economics">Economic conditions</Link></li>
+                <li><Link to="/present/ask">Funding ask</Link></li>
               </ul>
             </div>
           </nav>

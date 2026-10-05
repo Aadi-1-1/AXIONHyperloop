@@ -1,8 +1,6 @@
 /**
- * Source register. Each entry was located on the access date below.
- * Several primary websites (including forgehyperloop.com, hardt.global and hyperloopcenter.eu)
- * could not be opened from our research environment; where that happened we relied on
- * reputable secondary reporting and say so in `kind` and `note`.
+ * Source register. Each entry records what it supports, its type and the access date.
+ * Developer announcements are treated as reported claims, not independent verification.
  */
 export type Source = {
   id: string
@@ -11,7 +9,7 @@ export type Source = {
   url: string
   published?: string
   accessed: string
-  kind: 'Official / institution' | 'Company material' | 'News reporting' | 'Reference work' | 'Design reference'
+  kind: 'Official / institution' | 'Company material' | 'Peer-reviewed research' | 'News reporting' | 'Reference work' | 'Design reference'
   supports: string
   note?: string
 }
@@ -21,14 +19,14 @@ const ACCESSED = '2026-10-05'
 export const sources: Source[] = [
   {
     id: 'cen-cenelec-tr17912',
-    title: 'CEN/CLC/TR 17912 — a first step in the standardization of the European hyperloop industry',
+    title: 'CEN/CLC/TR 17912: a first step in the standardization of the European hyperloop industry',
     publisher: 'CEN-CENELEC',
     url: 'https://www.cencenelec.eu/news-events/news/2023/eninthespotlight/2023-02-13-a-first-step-in-the-standardization-of-the-european-hyperloop-industry/',
     published: '2023-02-13',
     accessed: ACCESSED,
     kind: 'Official / institution',
     supports:
-      'European standards bodies established a joint technical committee on Hyperloop systems (JTC 20) and published a standards inventory and roadmap — indicating that a full regulatory framework does not yet exist.',
+      'European standards bodies formed a joint committee on hyperloop systems (JTC 20) and published a standards inventory and roadmap in 2023, a first step towards standards rather than a complete regulatory framework.',
   },
   {
     id: 'iata-air-cargo',
@@ -37,59 +35,62 @@ export const sources: Source[] = [
     url: 'https://www.iata.org/contentassets/4d3961c878894c8a8725278607d8ad52/air-cargo-brochure.pdf',
     accessed: ACCESSED,
     kind: 'Official / institution',
-    supports: 'Air cargo carries a large share of world trade by value (around 35%) but less than 1% by volume — evidence that high-value goods pay for speed.',
-    note: 'Industry-association figure; publication year not stated in our record.',
+    supports: 'Air cargo carries around 35% of world trade by value but less than 1% by volume.',
+    note: 'Industry-association figure; publication year not stated in the document.',
   },
   {
-    id: 'innovationquarter-ehc',
-    title: 'Hardt Hyperloop secures €12 million for the groundbreaking European Hyperloop Center',
-    publisher: 'InnovationQuarter (an investor in the project)',
-    url: 'https://www.innovationquarter.nl/hardt-hyperloop-secures-e-12-million-for-the-groundbreaking-european-hyperloop-center/',
+    id: 'hardt-lane-switch-2025',
+    title: 'Hardt Hyperloop sets speed record and demonstrates lane switching at European Hyperloop Center',
+    publisher: 'Hardt Hyperloop',
+    url: 'https://www.hardt.global/press/hardt-hyperloop-sets-speed-record-and-demonstrates-lane-switching-at-european-hyperloop-center',
+    published: '2025-09',
     accessed: ACCESSED,
     kind: 'Company material',
-    supports: 'Hardt Hyperloop reported funding for the European Hyperloop Center test facility in Veendam, the Netherlands.',
-    note: 'Published by a participating investor — promotional, not independent verification.',
+    supports:
+      'Hardt reported reaching 85 km/h and completing a lane switch on the 420 m European Hyperloop Center track: accelerating over about 140 m, coasting through a 155 m lane switch and stopping in the final 100 m.',
+    note: 'Developer announcement. A component demonstration on a short test track.',
   },
   {
-    id: 'techeu-ehc-opens',
-    title: 'European Hyperloop Center opens its doors for first tests',
-    publisher: 'Tech.eu',
-    url: 'https://tech.eu/2024/03/27/european-hyperloop-center-opens-its-doors-for-first-tests/',
-    published: '2024-03-27',
+    id: 'iet-hardt-2025',
+    title: 'Hardt Hyperloop sets speed record and proves lane-switching at European test site',
+    publisher: 'E&T (Institution of Engineering and Technology)',
+    url: 'https://eandt.theiet.org/2025/09/10/hardt-hyperloop-sets-new-speed-record-and-proves-lane-switching-european-test-site',
+    published: '2025-09-10',
     accessed: ACCESSED,
     kind: 'News reporting',
-    supports: 'The European Hyperloop Center, a test facility of roughly 420 m including a lane switch, opened for testing.',
+    supports: 'Independent trade-press report of the September 2025 lane-switch demonstration.',
   },
   {
-    id: 'ap-hardt-test',
-    title: 'A capsule has been propelled through a hyperloop test tube in a step forward for the transit system',
-    publisher: 'Associated Press via KSAT',
-    url: 'https://www.ksat.com/business/2024/09/09/a-capsule-has-been-propelled-through-a-hyperloop-test-tube-in-a-step-forward-for-the-transit-system/',
-    published: '2024-09-09',
+    id: 'hardt-bankrupt-2026',
+    title: 'Hyperloop dream hits another wall as Dutch pioneer Hardt goes bankrupt',
+    publisher: 'New Mobility News',
+    url: 'https://newmobility.news/en/2026/03/06/hyperloop-dream-hits-another-wall-as-dutch-pioneer-hardt-goes-bankrupt/',
+    published: '2026-03-06',
     accessed: ACCESSED,
     kind: 'News reporting',
-    supports: 'Reported first test in which a Hardt vehicle levitated and moved a short distance at low speed in the depressurised test tube.',
-    note: 'Reports developer-supplied test details; low-speed, short-distance test.',
+    supports:
+      'Hardt Hyperloop was declared bankrupt by the court in The Hague on 4 March 2026 after failing to secure new funding. The European Hyperloop Center test facility is a separate entity and was reported to remain available to other developers.',
   },
   {
-    id: 'ie-hardt-scale',
-    title: 'Why hyperloop still can’t scale beyond test tracks',
-    publisher: 'Interesting Engineering',
-    url: 'https://interestingengineering.com/transportation/hyperloop-hardt-engineering-transport',
+    id: 'zeleros-insolvency-2026',
+    title: 'Top Spanish hyperloop developer Zeleros files for bankruptcy',
+    publisher: 'RailTech',
+    url: 'https://www.railtech.com/innovation/2026/04/09/top-spanish-hyperloop-developer-files-for-bankruptcy-assets-set-for-defence-and-energy-use/',
+    published: '2026-04-09',
     accessed: ACCESSED,
     kind: 'News reporting',
-    supports: 'Reports that Hardt announced track-switching progress in 2025 while the sector remains at test-track scale.',
-    note: 'Developer announcement as reported by media; not independently verified.',
+    supports: 'Zeleros entered insolvency proceedings in April 2026, the second major European hyperloop failure that year.',
   },
   {
-    id: 'freshplaza-hardt-cargo',
-    title: 'From Amsterdam to Barendrecht in 30 mins',
-    publisher: 'FreshPlaza',
-    url: 'https://www.freshplaza.com/article/9398197/from-amsterdam-to-barendrecht-in-30-mins/',
+    id: 'swisspod-2026',
+    title: 'Swisspod hits new hyperloop speed record, begins AERYS 2 development',
+    publisher: 'Swisspod',
+    url: 'https://www.swisspod.com/press-releases/swisspod-hits-new-hyperloop-speed-record-begins-aerys-2-development',
+    published: '2026-05-11',
     accessed: ACCESSED,
-    kind: 'News reporting',
-    supports: 'Describes Hardt Hyperloop’s cargo-focused concept studies in the Netherlands and early discussions with logistics stakeholders.',
-    note: 'Trade-press reporting of developer statements.',
+    kind: 'Company material',
+    supports: 'Swisspod reported 146 km/h with a full-scale capsule on its test track in Pueblo, Colorado, and is raising Series A funding.',
+    note: 'Developer announcement.',
   },
   {
     id: 'fortune-hyperloop-one',
@@ -99,26 +100,61 @@ export const sources: Source[] = [
     published: '2023-12-21',
     accessed: ACCESSED,
     kind: 'News reporting',
-    supports: 'Hyperloop One ceased operations at the end of 2023 after failing to secure a contract to build a working system; DP World was reported among its backers.',
+    supports: 'Hyperloop One ceased operations at the end of 2023 without a contract to build a working system. DP World was reported among its backers.',
   },
   {
-    id: 'cnn-hyperloop-status',
-    title: 'Hyperloop is dead. Or is it?',
-    publisher: 'CNN',
-    url: 'https://www.cnn.com/travel/hyperloop-is-dead-or-is-it',
+    id: 'hhla-hyperport',
+    title: 'HHLA and HyperloopTT reveal HyperPort',
+    publisher: 'American Journal of Transportation',
+    url: 'https://ajot.com/news/hyperlooptt-and-hhla-reveal-hyperport',
     accessed: ACCESSED,
     kind: 'News reporting',
-    supports: 'Overview of the sector’s setbacks and remaining active developers.',
+    supports:
+      'The port operator HHLA and HyperloopTT presented a container-freight hyperloop concept (HyperPort) after a cooperation agreement signed at the end of 2018, which shows that freight-focused hyperloop concepts already exist.',
   },
   {
-    id: 'wiki-hyperloop',
-    title: 'Hyperloop',
-    publisher: 'Wikipedia',
-    url: 'https://en.wikipedia.org/wiki/Hyperloop',
+    id: 'mdpi-hyperloop-cost',
+    title: 'Assessing Hyperloop Transport: Optimizing Cost with Different Designs of Capsule',
+    publisher: 'Processes (MDPI), vol. 11',
+    url: 'https://doi.org/10.3390/pr11030744',
+    published: '2023',
+    accessed: ACCESSED,
+    kind: 'Peer-reviewed research',
+    supports:
+      'Reviews published hyperloop cost estimates: about EUR 25–35 million per km for tubes on pillars, about EUR 70 million per km in tunnel, and an average of about EUR 76 million per km for route studies (excluding land).',
+    note: 'Compiles earlier estimates. None is based on a built system.',
+  },
+  {
+    id: 'edge-hsr-termination',
+    title: 'Singapore says HSR link agreement with Malaysia to be terminated',
+    publisher: 'The Edge Malaysia',
+    url: 'https://theedgemalaysia.com/article/singapore-says-hsr-link-agreement-malaysia-be-terminated',
+    published: '2021-01-01',
+    accessed: ACCESSED,
+    kind: 'News reporting',
+    supports:
+      'The 350 km Kuala Lumpur–Singapore high-speed rail project was terminated in 2021 after the two governments could not agree changes. Reported cost estimates ranged from about RM110 billion originally to about RM60 billion.',
+  },
+  {
+    id: 'rts-link',
+    title: 'Johor Bahru–Singapore RTS Link',
+    publisher: 'Land Transport Guru',
+    url: 'https://landtransportguru.net/train/rts-link/',
     accessed: ACCESSED,
     kind: 'Reference work',
-    supports: 'The modern Hyperloop concept was popularised by the “Hyperloop Alpha” white paper published in August 2013.',
-    note: 'Secondary reference; the original white paper could not be retrieved from our environment.',
+    supports:
+      'A 4 km cross-strait rail shuttle between Johor Bahru and Singapore, targeted to open from December 2026, shows how costly and complex a short Johor Strait crossing can be.',
+  },
+  {
+    id: 'sp-tariff-2025',
+    title: 'Electricity tariff revision for the period 1 October to 31 December 2025',
+    publisher: 'SP Group',
+    url: 'https://www.spgroup.com.sg/about-us/media-resources/news-and-media-releases/Electricity-Tariff-Revision-for-the-Period-1-October-to-31-December-2025',
+    published: '2025',
+    accessed: ACCESSED,
+    kind: 'Company material',
+    supports: 'Singapore’s regulated electricity tariff was around 28 Singapore cents per kWh in 2025.',
+    note: 'Regulated tariff; large industrial contracts are priced differently.',
   },
   {
     id: 'wiki-seikan',
@@ -127,8 +163,7 @@ export const sources: Source[] = [
     url: 'https://en.wikipedia.org/wiki/Seikan_Tunnel',
     accessed: ACCESSED,
     kind: 'Reference work',
-    supports:
-      'The Seikan Tunnel (about 53.9 km, about 23.3 km under the seabed) and the Channel Tunnel (about 37.9 km undersea) indicate the scale of existing undersea fixed links.',
+    supports: 'The Seikan Tunnel (about 23 km beneath the seabed) and the Channel Tunnel (about 38 km undersea) indicate the scale of existing undersea fixed links.',
   },
   {
     id: 'wiki-japan-korea-tunnel',
@@ -137,7 +172,7 @@ export const sources: Source[] = [
     url: 'https://en.wikipedia.org/wiki/Japan%E2%80%93Korea_Undersea_Tunnel',
     accessed: ACCESSED,
     kind: 'Reference work',
-    supports: 'A fixed link from Japan to mainland Asia has been proposed for decades without being built, illustrating the difficulty of sea crossings.',
+    supports: 'A fixed link from Japan to mainland Asia has been proposed for decades without being built.',
   },
   {
     id: 'wiki-china-laos-rail',
@@ -146,7 +181,16 @@ export const sources: Source[] = [
     url: 'https://en.wikipedia.org/wiki/Boten%E2%80%93Vientiane_railway',
     accessed: ACCESSED,
     kind: 'Reference work',
-    supports: 'The China–Laos railway between Kunming and Vientiane opened in December 2021, showing an existing overland corridor direction from southern China towards Southeast Asia.',
+    supports: 'The China–Laos railway between Kunming and Vientiane opened in December 2021.',
+  },
+  {
+    id: 'wiki-hyperloop',
+    title: 'Hyperloop',
+    publisher: 'Wikipedia',
+    url: 'https://en.wikipedia.org/wiki/Hyperloop',
+    accessed: ACCESSED,
+    kind: 'Reference work',
+    supports: 'The modern hyperloop concept was popularised by the “Hyperloop Alpha” white paper published in August 2013.',
   },
   {
     id: 'forge-hyperloop',
@@ -155,8 +199,7 @@ export const sources: Source[] = [
     url: 'https://www.forgehyperloop.com/',
     accessed: ACCESSED,
     kind: 'Design reference',
-    supports: 'Independent project used as a design and presentation reference for this website.',
-    note: 'The site could not be opened from our build environment. No facts, copy or claims are taken from it.',
+    supports: 'An independent project used as a design and presentation reference for this website. No facts or claims are drawn from it.',
   },
 ]
 

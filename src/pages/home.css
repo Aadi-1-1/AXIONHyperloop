@@ -330,3 +330,81 @@
   border-radius: var(--radius-lg);
   margin-bottom: 46px;
 }
+.does-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 32px;
+}
+@media (min-width: 1000px) {
+  .does-grid {
+    grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  }
+}
+.products-compact {
+  display: grid;
+  gap: 12px;
+}
+.product-mini {
+  padding: 20px 22px;
+  border: 1px solid var(--line);
+  border-top: 3px solid var(--freight);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 8px;
+  background: linear-gradient(180deg, rgba(63, 216, 240, 0.04), transparent 60%), var(--bg-raised);
+}
+.product-mini.product-passenger {
+  border-top-color: var(--passenger);
+  background: transparent;
+}
+.product-mini p {
+  margin: 0;
+}
+.payer-list {
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+.payer-list li {
+  display: grid;
+  gap: 2px;
+  padding: 12px 0;
+  border-bottom: 1px solid var(--line);
+}
+.lead-card {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-lg);
+  overflow: hidden;
+}
+@media (min-width: 1000px) {
+  .lead-card {
+    grid-template-columns: minmax(0, 1.4fr) minmax(0, 1fr);
+  }
+}
+.lead-map {
+  background: #0c1117;
+  min-width: 0;
+}
+.lead-map .flat-map {
+  aspect-ratio: 1.6 / 1;
+}
+.lead-facts {
+  padding: clamp(18px, 2.4vw, 28px);
+  display: grid;
+  gap: 12px;
+  align-content: start;
+  background: var(--bg-raised);
+}
+.lead-facts .h3,
+.lead-facts .label {
+  margin: 0;
+}
+.team-line {
+  margin-top: 28px;
+  line-height: 1.8;
+}
+.team-name {
+  color: var(--text);
+  font-weight: 560;
+}

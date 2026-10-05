@@ -25,7 +25,7 @@ export const techSystems: TechSystem[] = [
     summary: 'Electric linear motors move pods; magnetic guidance keeps them centred.',
     detail:
       'Linear motor segments in the guideway accelerate and brake the pod without wheels touching a rail. Levitation and guidance magnets hold the pod in position and allow switching between tubes.',
-    status: 'Developers report low-speed test-track demonstrations; not yet proven at commercial scale.',
+    status: 'Reported on short test tracks: 85 km/h with a lane switch (Hardt, September 2025) and 146 km/h (Swisspod, May 2026). Not demonstrated at commercial length, speed or reliability.',
   },
   {
     id: 'tube',
@@ -88,7 +88,7 @@ export const techSystems: TechSystem[] = [
     summary: 'Isolation, emergency braking, repressurisation and egress.',
     detail:
       'Safety systems detect faults, stop pods, isolate tube sections and repressurise them for access. Freight-only operation removes passenger evacuation from early scope; a passenger system needs additional safety evidence and approvals.',
-    status: 'No complete Hyperloop safety standard exists yet; European standards work is in progress.',
+    status: 'European standards work began with a 2023 roadmap. A hyperloop certification route in Singapore and Malaysia is still to be confirmed (a Gate 2 task).',
   },
 ]
 

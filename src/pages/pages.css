@@ -129,3 +129,20 @@
   gap: 8px 12px;
   align-items: center;
 }
+.phase-funding {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 16px 40px;
+  margin-top: 20px;
+  padding: 18px 20px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+}
+@media (min-width: 900px) {
+  .phase-funding {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+.phase-funding p {
+  margin: 4px 0 0;
+}

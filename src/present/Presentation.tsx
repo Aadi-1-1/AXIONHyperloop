@@ -1,7 +1,7 @@
 import { useCallback, useEffect, useRef, useState } from 'react'
 import ScrollLink from '../components/ScrollLink'
 import { Link, Navigate, useNavigate, useParams } from 'react-router-dom'
-import { chapters } from '../data/presentation'
+import { chapterAliases, chapters } from '../data/presentation'
 import { LogoMark } from '../components/Logo'
 import { useReducedMotion } from '../lib/hooks'
 import { slideBodies } from './slides'
@@ -111,7 +111,7 @@ export default function Presentation() {
     return () => window.removeEventListener('keydown', onKey)
   }, [go, index, menuOpen, notesOpen, exit, toggleFullscreen, fullscreenSupported])
 
-  if (index < 0) return <Navigate to={`/present/${chapters[0].slug}`} replace />
+  if (index < 0) return <Navigate to={`/present/${chapterAliases[slug ?? ''] ?? chapters[0].slug}`} replace />
 
   const chapter = chapters[index]
   const Body = slideBodies[chapter.slug]

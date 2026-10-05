@@ -137,3 +137,68 @@
 .invite-strip {
   background: var(--bg-raised);
 }
+.inv-cash {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 40px;
+  margin-top: 56px;
+}
+@media (min-width: 1000px) {
+  .inv-cash {
+    grid-template-columns: minmax(0, 1.3fr) minmax(0, 1fr);
+  }
+}
+.inv-cash .h3 {
+  margin-bottom: 10px;
+}
+.prospect-list {
+  list-style: none;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 340px), 1fr));
+  gap: 12px;
+}
+.prospect {
+  padding: 18px;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  display: grid;
+  gap: 6px;
+  align-content: start;
+}
+.prospect p {
+  margin: 0;
+}
+.prospect-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+.prospect-dl {
+  margin: 8px 0 0;
+  display: grid;
+  gap: 8px;
+}
+.prospect-dl dt {
+  font-family: var(--font-mono);
+  font-size: 0.68rem;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+.prospect-dl dd {
+  margin: 2px 0 0;
+  color: var(--text-2);
+}
+.cat-row {
+  margin-top: 36px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 20px 32px;
+  padding-top: 24px;
+  border-top: 1px solid var(--line);
+}
+.cat-row p {
+  margin: 6px 0 0;
+}

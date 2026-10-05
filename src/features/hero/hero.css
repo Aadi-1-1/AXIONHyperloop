@@ -51,3 +51,25 @@
   flex: none;
   flex-wrap: nowrap;
 }
+.hv-acts {
+  position: absolute;
+  left: 16px;
+  bottom: 14px;
+  list-style: none;
+  display: flex;
+  gap: 6px;
+  pointer-events: none;
+}
+.hv-acts li {
+  width: 22px;
+  height: 3px;
+  border-radius: 2px;
+  background: rgba(255, 255, 255, 0.18);
+  transition: background 0.6s var(--ease);
+}
+.hv-acts li.done {
+  background: rgba(63, 216, 240, 0.45);
+}
+.hv-acts li.on {
+  background: var(--freight);
+}

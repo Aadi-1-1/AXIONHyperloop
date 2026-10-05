@@ -13,7 +13,7 @@ export const company = {
   ownership: 'Privately held company seeking equity investment (proposed)',
   objectives: [
     'Validate whether time-sensitive freight customers would contract for reserved Hyperloop capacity.',
-    'Compare candidate corridors and select one for detailed route feasibility.',
+    'Test the Singapore–Kuala Lumpur lead study corridor against comparison corridors, and confirm or replace it.',
     'Demonstrate pod, propulsion, vacuum and terminal-transfer systems at test scale.',
     'Reach an evidence-based construction decision for a first commercial freight corridor.',
   ],
@@ -202,7 +202,7 @@ export const competition: CompetitorRow[] = [
     capacity: 'Unproven',
     flexibility: 'Fixed corridors',
     maturity: 'Test and development stage',
-    takeaway: 'Other developers are potential partners and benchmarks. AXION’s difference is its freight-first operating model, not proprietary technology.',
+    takeaway: 'Freight hyperloop concepts already exist (for example HHLA and HyperloopTT’s container concept), and several developers failed in 2023–2026. AXION’s proposed angle is an operator model built on reserved capacity and logistics-partner integration, which still has to be tested.',
   },
 ]
 
@@ -251,11 +251,12 @@ export const risks = [
   { category: 'Technical', title: 'Technology readiness', body: 'Hyperloop systems have not operated commercially anywhere. Test results may not scale to long corridors.' },
   { category: 'Technical', title: 'Safety and approvals', body: 'No complete regulatory framework exists. Approval could take longer and cost more than planned — especially for passengers.' },
   { category: 'Commercial', title: 'Demand and pricing', body: 'Customers may not pay a premium over road and rail, or may not commit to reserved capacity.' },
-  { category: 'Commercial', title: 'Utilisation', body: 'Operating results depend heavily on utilisation. Below roughly 42% in the illustration, the corridor does not cover operating costs.' },
-  { category: 'Financial', title: 'Construction financing', body: 'The illustrative 100 km corridor costs about $3bn — far beyond the development round, and large relative to operating surplus.' },
-  { category: 'Financial', title: 'Cost uncertainty', body: 'The $20m/km infrastructure assumption is unvalidated. Real costs could be materially higher.' },
+  { category: 'Commercial', title: 'Utilisation', body: 'Results depend heavily on how many departure slots are sold. Low demand leaves large fixed and renewal costs uncovered.' },
+  { category: 'Financial', title: 'Capital recovery', body: 'In the central Singapore–Kuala Lumpur scenario, freight revenue covers operations but not renewals or construction. Viability needs much higher prices, far lower costs, public infrastructure funding, or a combination.' },
+  { category: 'Financial', title: 'Cost uncertainty', body: 'Unit costs come from published estimates for systems that have never been built. Real costs could be materially higher.' },
   { category: 'Delivery', title: 'Land and permits', body: 'Corridors need land, environmental approval and, across borders, intergovernmental agreements.' },
-  { category: 'Delivery', title: 'Sector track record', body: 'At least one prominent Hyperloop developer has ceased operations. Investors will rightly compare AXION to that history.' },
+  { category: 'Delivery', title: 'Sector track record', body: 'Hyperloop One closed in 2023, Hardt was declared bankrupt in March 2026 and Zeleros became insolvent in April 2026. Investors will rightly compare AXION with that history.' },
+  { category: 'Delivery', title: 'Cross-border politics', body: 'A government-to-government high-speed rail project on the Singapore–Kuala Lumpur axis was terminated in 2021.' },
 ]
 
 export const expansion =

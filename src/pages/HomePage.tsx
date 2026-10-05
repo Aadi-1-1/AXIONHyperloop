@@ -1,24 +1,28 @@
 import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import ShipmentJourney from '../features/journey/ShipmentJourney'
-import LeaderProfile from '../components/LeaderProfile'
+import FundingLadder from '../features/finance/FundingLadder'
 import { Eyebrow, KindTag, SourceRef, SystemChip } from '../components/common'
-import { benefits, company, problem, products } from '../data/company'
+import { benefits, company, customerSegments, problem, products } from '../data/company'
 import { leadership } from '../data/leadership'
-import { phases } from '../data/network'
-import { developmentProgramme, operatingDefaults } from '../data/finance'
-import { constructionCost, operatingBreakEven, pct, usdCompact, usdPerKg } from '../lib/finance'
-import './home.css'
+import { corridors, hubById, leadCorridor } from '../data/network'
+import { developmentProgramme } from '../data/finance'
+import { centralInputs } from '../data/corridorModel'
+import { runCorridorModel } from '../lib/corridorModel'
+import { usdCompact } from '../lib/finance'
+import { formatKm } from '../lib/geo'
 import { usePageTitle } from '../lib/hooks'
+import './home.css'
 import './pages.css'
 
-const NetworkPreview = lazy(() => import('../features/network/NetworkPreview'))
 const HeroVisual = lazy(() => import('../features/hero/HeroVisual'))
+const FlatMap = lazy(() => import('../features/network/FlatMap'))
+const RegionGrid = lazy(() => import('../features/network/RegionGrid'))
+
+const lead = runCorridorModel(centralInputs)
 
 export default function HomePage() {
   usePageTitle('')
-  const be = operatingBreakEven(operatingDefaults)
-  const cc = constructionCost()
 
   return (
     <>
@@ -35,9 +39,9 @@ export default function HomePage() {
               <span className="hero-accent">Connect people.</span>
             </h1>
             <p className="lead hero-lead">
-              AXION proposes to build and operate <strong>Hyperloop freight corridors</strong> between major logistics hubs —
-              selling reserved, terminal-to-terminal capacity to logistics companies. A separate passenger system would
-              follow on selected corridors.
+              AXION proposes to build and operate <strong>hyperloop freight corridors</strong> between major logistics hubs,
+              selling reserved terminal-to-terminal capacity to logistics companies. Development would start with one lead study
+              corridor: <strong>Singapore–Kuala Lumpur</strong>.
             </p>
             <div className="cluster hero-ctas">
               <Link to="/network" className="btn btn-primary">
@@ -49,12 +53,12 @@ export default function HomePage() {
             </div>
             <dl className="hero-facts">
               <div>
-                <dt className="label">Focus</dt>
-                <dd>Freight first</dd>
+                <dt className="label">Customers</dt>
+                <dd>Logistics companies</dd>
               </div>
               <div>
-                <dt className="label">Proposed HQ</dt>
-                <dd>Singapore</dd>
+                <dt className="label">Lead study corridor</dt>
+                <dd>Singapore–KL</dd>
               </div>
               <div>
                 <dt className="label">Seeking</dt>
@@ -70,50 +74,82 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- What we propose ---------- */}
-      <section className="section" aria-labelledby="business-title">
+      {/* ---------- What AXION does / who pays ---------- */}
+      <section className="section" aria-labelledby="does-title">
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="01">The proposal</Eyebrow>
-              <h2 className="h2" id="business-title">
-                We would own the corridor. Partners own the doorstep.
+              <Eyebrow index="01">What AXION does</Eyebrow>
+              <h2 className="h2" id="does-title">
+                We would sell reserved capacity. Logistics companies would pay for it.
               </h2>
             </div>
             <p className="lead">
-              AXION would develop, own and operate Hyperloop networks with specialist engineering partners. Existing logistics
-              providers keep doing what they do best — collection and final delivery.
+              AXION would develop, own and operate the corridor with specialist engineering partners. Logistics providers and large
+              shippers would book capacity and keep collection and final delivery.
             </p>
           </div>
-          <ol className="proposal-steps">
-            {[
-              { k: 'Develop', b: 'Select corridors, design systems and secure approvals — with specialist technology partners.' },
-              { k: 'Own', b: 'Hold the tubes, terminals and pods as long-term infrastructure assets.' },
-              { k: 'Operate', b: 'Run terminal-to-terminal freight service with tracking and estimated-arrival visibility.' },
-              { k: 'Integrate', b: 'Connect terminals to customers’ logistics networks, so collection and delivery stay with partners.' },
-            ].map((s, i) => (
-              <li key={s.k} className="reveal">
-                <span className="mono step-idx">0{i + 1}</span>
-                <h3 className="h3">{s.k}</h3>
-                <p className="body-2 small">{s.b}</p>
-              </li>
-            ))}
-          </ol>
+          <div className="does-grid">
+            <div className="products-compact">
+              {products.map((p) => (
+                <article key={p.id} className={`product-mini product-${p.system}`}>
+                  <div className="cluster" style={{ ['--gap' as string]: '10px' }}>
+                    <SystemChip system={p.system} />
+                    <span className="label">{p.status}</span>
+                  </div>
+                  <h3 className="h3">{p.name}</h3>
+                  <p className="small body-2">{p.summary}</p>
+                </article>
+              ))}
+            </div>
+            <div>
+              <p className="label" style={{ marginBottom: 10 }}>
+                Who pays: freight that values time
+              </p>
+              <ul className="payer-list">
+                {customerSegments.map((s) => (
+                  <li key={s.title}>
+                    <strong>{s.title}</strong>
+                    <span className="small muted">{s.body}</span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          </div>
         </div>
       </section>
 
-      {/* ---------- Problem ---------- */}
-      <section className="section problem" aria-labelledby="problem-title">
+      {/* ---------- Journey ---------- */}
+      <section className="section" id="journey" aria-labelledby="journey-title">
+        <div className="container">
+          <div className="section-head split">
+            <div>
+              <Eyebrow index="02">How a shipment moves</Eyebrow>
+              <h2 className="h2" id="journey-title">
+                Follow one shipment, door to door.
+              </h2>
+            </div>
+            <p className="body-2">
+              AXION runs terminal to terminal; partners handle both ends. Step through the stages, and switch on cross-border to see
+              where customs fits.
+            </p>
+          </div>
+          <ShipmentJourney />
+        </div>
+      </section>
+
+      {/* ---------- Why useful ---------- */}
+      <section className="section" aria-labelledby="why-title">
         <div className="container grid-2 problem-grid">
           <div>
-            <Eyebrow index="02">The logistics problem</Eyebrow>
-            <h2 className="h2" id="problem-title">
+            <Eyebrow index="03">Why it could be useful</Eyebrow>
+            <h2 className="h2" id="why-title">
               {problem.headline}
             </h2>
-            <figure className="stat-figure reveal">
+            <figure className="stat-figure">
               <p className="stat-row">
                 <span className="figure-num stat-big">~35%</span>
-                <span className="stat-text">of world trade by value moves by air —</span>
+                <span className="stat-text">of world trade by value moves by air,</span>
               </p>
               <p className="stat-row">
                 <span className="figure-num stat-big muted">&lt;1%</span>
@@ -124,90 +160,9 @@ export default function HomePage() {
               </figcaption>
             </figure>
           </div>
-          <div className="problem-points">
-            {problem.points.map((p, i) => (
-              <div key={p.title} className="problem-point reveal">
-                <span className="mono step-idx">0{i + 1}</span>
-                <div>
-                  <h3 className="h4">{p.title}</h3>
-                  <p className="body-2">{p.body}</p>
-                </div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Products ---------- */}
-      <section className="section" aria-labelledby="products-title">
-        <div className="container">
-          <div className="section-head split">
-            <div>
-              <Eyebrow index="03">Products</Eyebrow>
-              <h2 className="h2" id="products-title">
-                Two systems. One clear priority.
-              </h2>
-            </div>
-            <p className="body-2">
-              Freight is the early commercial focus. Passenger service is a separate system — separate infrastructure, costs,
-              safety case and milestones — and sits outside the current development budget.
-            </p>
-          </div>
-          <div className="products">
-            {products.map((p) => (
-              <article key={p.id} className={`product product-${p.system} reveal`}>
-                <div className="product-head">
-                  <SystemChip system={p.system} />
-                  <span className="label">{p.status}</span>
-                </div>
-                <h3 className="h2 product-name">{p.name}</h3>
-                <p className="body-2">{p.summary}</p>
-                <ul className="product-features">
-                  {p.features.map((f) => (
-                    <li key={f}>{f}</li>
-                  ))}
-                </ul>
-              </article>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Journey ---------- */}
-      <section className="section" id="journey" aria-labelledby="journey-title">
-        <div className="container">
-          <div className="section-head split">
-            <div>
-              <Eyebrow index="04">Shipment journey</Eyebrow>
-              <h2 className="h2" id="journey-title">
-                Follow one shipment, door to door.
-              </h2>
-            </div>
-            <p className="body-2">
-              Select a stage or step through the journey. AXION runs terminal to terminal; partners handle the ends. Toggle
-              cross-border to see where customs and inspection fit.
-            </p>
-          </div>
-          <ShipmentJourney />
-        </div>
-      </section>
-
-      {/* ---------- Benefits ---------- */}
-      <section className="section" aria-labelledby="benefits-title">
-        <div className="container grid-2">
-          <div>
-            <Eyebrow index="05">Customer benefits</Eyebrow>
-            <h2 className="h2" id="benefits-title">
-              What customers would buy is time they can rely on.
-            </h2>
-            <p className="body-2" style={{ marginTop: 20, maxWidth: '46ch' }}>
-              These are the outcomes AXION would have to prove with customers. None is assumed — each becomes a test in the
-              feasibility programme.
-            </p>
-          </div>
           <ul className="benefit-list">
             {benefits.map((b) => (
-              <li key={b.title} className="reveal">
+              <li key={b.title}>
                 <h3 className="h4">{b.title}</h3>
                 <p className="body-2 small">{b.body}</p>
               </li>
@@ -216,152 +171,119 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* ---------- Network preview ---------- */}
-      <section className="section" aria-labelledby="network-title">
+      {/* ---------- Where development starts ---------- */}
+      <section className="section" aria-labelledby="start-title">
         <div className="container">
           <div className="section-head split">
             <div>
-              <Eyebrow index="06">Network vision</Eyebrow>
-              <h2 className="h2" id="network-title">
-                Start regional. Expand only on evidence.
+              <Eyebrow index="04">Where development starts</Eyebrow>
+              <h2 className="h2" id="start-title">
+                One lead corridor first. Regional networks only on evidence.
               </h2>
             </div>
             <p className="body-2">
-              Three geographic phases set the order of ambition. No launch corridor has been selected, and no route is promised
-              a completion date.
+              Singapore–Kuala Lumpur is the proposed lead study corridor; its feasibility is unverified. Every regional network below is
+              drawn complete. Separate networks stay separate.
             </p>
           </div>
-          <div className="network-preview">
-            <Suspense fallback={<div className="np-fallback" />}>
-              <NetworkPreview />
-            </Suspense>
-            <ol className="phase-list">
-              {phases.map((p) => (
-                <li key={p.id}>
-                  <span className="mono step-idx">Phase {p.id}</span>
-                  <span className="h4">{p.regions}</span>
-                </li>
-              ))}
-              <li className="phase-cta">
-                <Link to="/network" className="btn btn-primary">
-                  Explore the network <span className="arrow" aria-hidden="true">→</span>
+          <div className="lead-card">
+            <div className="lead-map">
+              <Suspense fallback={<div className="np-fallback" />}>
+                <FlatMap
+                  frame={leadCorridor.path.map((id) => [hubById[id].lon, hubById[id].lat] as [number, number])}
+                  frameKey="home-lead"
+                  corridorIds={corridors.filter((c) => c.status !== 'conceptual' && (c.path.includes('singapore') || c.path.includes('kuala-lumpur'))).map((c) => c.id)}
+                  emphasis={new Set([leadCorridor.id])}
+                  hubIds={['singapore', 'kuala-lumpur']}
+                  endpoints={new Set(leadCorridor.path)}
+                  systems={{ freight: true, passenger: false }}
+                  playing
+                  label="Map of the Singapore–Kuala Lumpur lead study corridor."
+                />
+              </Suspense>
+            </div>
+            <div className="lead-facts">
+              <p className="label freight-text">Proposed lead study corridor · feasibility unverified</p>
+              <h3 className="h3">Singapore — Kuala Lumpur</h3>
+              <dl className="kv">
+                <div>
+                  <dt>Geographic distance</dt>
+                  <dd className="mono">{formatKm(lead.geographicKm)}</dd>
+                </div>
+                <div>
+                  <dt>Assumed alignment</dt>
+                  <dd className="mono">{centralInputs.alignmentKm} km, not surveyed</dd>
+                </div>
+                <div>
+                  <dt>Scope</dt>
+                  <dd>Twin tubes, freight first</dd>
+                </div>
+                <div>
+                  <dt>Central capacity</dt>
+                  <dd className="mono">{(lead.capacity.capacityT / 1e6).toFixed(1)} Mt a year</dd>
+                </div>
+                <div>
+                  <dt>Central construction</dt>
+                  <dd className="mono">≈${(lead.capex.total / 1e9).toFixed(0)}bn</dd>
+                </div>
+              </dl>
+              <div className="cluster">
+                <Link to="/network?view=corridor&corridor=singapore-kuala-lumpur" className="btn btn-sm">
+                  Corridor view
                 </Link>
-              </li>
-            </ol>
+                <Link to="/business#corridor-model" className="btn btn-sm btn-ghost">
+                  Economics →
+                </Link>
+              </div>
+            </div>
+          </div>
+          <div style={{ marginTop: 24 }}>
+            <Suspense fallback={<div className="np-fallback" />}>
+              <RegionGrid />
+            </Suspense>
           </div>
         </div>
       </section>
 
-      {/* ---------- Commercial model preview ---------- */}
-      <section className="section" aria-labelledby="model-title">
-        <div className="container">
-          <div className="section-head split">
-            <div>
-              <Eyebrow index="07">Commercial model</Eyebrow>
-              <h2 className="h2" id="model-title">
-                Recurring capacity contracts — and an honest financing challenge.
-              </h2>
-            </div>
-            <p className="body-2">
-              Revenue would come from reserved capacity under recurring contracts, plus additional shipments when space allows.
-              The figures below come from an illustrative 100 km corridor model.
-            </p>
-          </div>
-          <dl className="model-stats">
-            <div className="reveal">
-              <dt className="label">Assumed average charge</dt>
-              <dd className="figure-num">{usdPerKg(operatingDefaults.pricePerKg)}</dd>
-              <dd className="small muted">
-                <KindTag kind="assumption" />
-              </dd>
-            </div>
-            <div className="reveal">
-              <dt className="label">Operating break-even</dt>
-              <dd className="figure-num">{be.kind === 'finite' ? `≈${pct(be.utilisation)}` : 'None'}</dd>
-              <dd className="small muted">
-                <KindTag kind="calculated" /> utilisation
-              </dd>
-            </div>
-            <div className="reveal">
-              <dt className="label">Illustrative construction</dt>
-              <dd className="figure-num">{usdCompact(cc.total)}</dd>
-              <dd className="small muted">
-                <KindTag kind="calculated" /> 100 km, incl. contingency
-              </dd>
-            </div>
-          </dl>
-          <p className="notice warn" style={{ marginTop: 28 }}>
-            <span>
-              A positive operating result does not make a corridor investable: the illustrative {usdCompact(cc.total)} construction
-              cost is a serious financing challenge, shown openly in the{' '}
-              <Link to="/business#financing-challenge" className="text-link">
-                business model
-              </Link>
-              .
-            </span>
-          </p>
-          <div className="cluster" style={{ marginTop: 28 }}>
-            <Link to="/business#operating-model" className="btn">
-              Try the operating explorer
-            </Link>
-            <Link to="/business" className="btn btn-ghost">
-              Read the business model →
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Leadership preview ---------- */}
-      <section className="section" aria-labelledby="team-title">
-        <div className="container">
-          <div className="section-head split">
-            <div>
-              <Eyebrow index="08">Leadership</Eyebrow>
-              <h2 className="h2" id="team-title">
-                Four executives, four clear responsibilities.
-              </h2>
-            </div>
-            <p className="body-2">
-              <Link to="/leadership" className="text-link">
-                Meet the leadership team
-              </Link>{' '}
-              and see who is accountable for strategy, technology, finance and operations.
-            </p>
-          </div>
-          <div className="leader-grid compact">
-            {leadership.map((l) => (
-              <LeaderProfile key={l.id} leader={l} variant="compact" />
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* ---------- Investor invitation ---------- */}
+      {/* ---------- What investment funds ---------- */}
       <section className="section invite" aria-labelledby="invite-title">
-        <div className="container invite-grid">
-          <div>
-            <Eyebrow>For investors</Eyebrow>
-            <h2 className="h1 invite-title" id="invite-title">
-              {usdCompact(developmentProgramme.askUsd)} to find out, with evidence, whether a first corridor should be built.
-            </h2>
-          </div>
-          <div className="invite-side">
-            <p className="lead">
-              A three-year feasibility and demonstration programme with five decision gates. No revenue is assumed, and further
-              financing would be needed before construction.
-            </p>
-            <div className="cluster">
-              <Link to="/investors" className="btn btn-primary">
-                For Investors <span className="arrow" aria-hidden="true">→</span>
-              </Link>
-              <Link to="/present/vision" className="btn">
-                Start Investor Presentation
-              </Link>
-              <Link to="/evidence" className="btn btn-ghost">
-                Evidence &amp; assumptions
-              </Link>
+        <div className="container">
+          <div className="section-head split">
+            <div>
+              <Eyebrow index="05">What investment funds</Eyebrow>
+              <h2 className="h1 invite-title" id="invite-title">
+                {usdCompact(developmentProgramme.askUsd)} to find out, with evidence, whether a first corridor should be built.
+              </h2>
+            </div>
+            <div className="stack">
+              <p className="lead">
+                The development round funds three years of feasibility and demonstration, drawn in tranches against five decision
+                gates. Construction finance would be a separate, conditional decision.
+              </p>
+              <div className="cluster">
+                <Link to="/investors" className="btn btn-primary">
+                  For Investors <span className="arrow" aria-hidden="true">→</span>
+                </Link>
+                <Link to="/present/vision" className="btn">
+                  Start Investor Presentation
+                </Link>
+              </div>
             </div>
           </div>
+          <FundingLadder compact />
+          <p className="team-line small muted">
+            Leadership:{' '}
+            {leadership.map((l, i) => (
+              <span key={l.id}>
+                {i > 0 && ' · '}
+                <strong className="team-name">{l.name}</strong>, {l.role}
+              </span>
+            ))}{' '}
+            ·{' '}
+            <Link to="/leadership" className="text-link">
+              Meet the team
+            </Link>
+          </p>
         </div>
       </section>
     </>
