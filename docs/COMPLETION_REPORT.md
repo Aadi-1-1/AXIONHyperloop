@@ -45,7 +45,7 @@
 1. **The reference site was not inspected.** The build environment's network policy blocked `forgehyperloop.com`, `hardt.global` and `hyperloopcenter.eu`. The design is original and built from the brief; nothing is taken from Forge.
 2. **Most sources are secondary.** Several primary sites could not be opened, so some sources are news or reference works. Each one is labelled. Developer claims are marked as reported, not verified.
 3. **External links were checked for form only.** Each link is a well-formed https URL with safe `target` and `rel` attributes, but egress limits meant the destinations could not be fetched to confirm they are live.
-4. **Not deployed.** No hosting credentials are available in this environment. The README has exact Vercel, Netlify and static-host steps. A private preview link was published separately from the single-file build.
+4. **Not deployed.** No hosting credentials are available in this environment. The README has exact Vercel, Netlify and static-host steps. A private preview of the single-file build is at https://claude.ai/artifact/G2HSogeJAY6256uPYTA3tc. It is visible only to its owner until shared from the page's Share menu.
 5. **Real-device testing.** Tests ran in headless Chromium only. Safari and Firefox were not run here, and there was no test on a real projector or touch device.
 6. **Fullscreen** uses the browser Fullscreen API. Some embedded or iframe contexts block it; the control is hidden where the API is missing.
 7. **Map detail.** The world map uses 110m-resolution borders, which suits a global overview. Close zoom on small regions (such as the Johor Strait) shows simplified coastlines.
