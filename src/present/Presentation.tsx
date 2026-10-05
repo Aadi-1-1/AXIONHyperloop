@@ -22,14 +22,23 @@ export default function Presentation() {
   const menuButtonRef = useRef<HTMLButtonElement>(null)
   const fullscreenSupported = typeof document !== 'undefined' && !!document.documentElement.requestFullscreen
 
+  // The chapter we are moving to. Route changes render in a transition, so a quick second key press
+  // must count from the requested chapter rather than the one still on screen.
+  const targetRef = useRef(index)
+  useEffect(() => {
+    targetRef.current = index
+  }, [index])
   const go = useCallback(
     (i: number) => {
-      if (i < 0 || i >= chapters.length || i === index) return
-      setDirection(i > index ? 1 : -1)
+      const from = targetRef.current
+      if (i < 0 || i >= chapters.length || i === from) return
+      targetRef.current = i
+      setDirection(i > from ? 1 : -1)
       navigate(`/present/${chapters[i].slug}`, { replace: true })
     },
-    [index, navigate],
+    [navigate],
   )
+  const goBy = useCallback((d: number) => go(targetRef.current + d), [go])
 
   const exit = useCallback(() => {
     if (document.fullscreenElement) document.exitFullscreen?.().catch(() => {})
@@ -66,17 +75,17 @@ export default function Presentation() {
         case 'ArrowRight':
         case 'PageDown':
           e.preventDefault()
-          go(index + 1)
+          goBy(1)
           break
         case ' ':
           if (onControl) return
           e.preventDefault()
-          go(index + (e.shiftKey ? -1 : 1))
+          goBy(e.shiftKey ? -1 : 1)
           break
         case 'ArrowLeft':
         case 'PageUp':
           e.preventDefault()
-          go(index - 1)
+          goBy(-1)
           break
         case 'Home':
           e.preventDefault()
@@ -109,7 +118,7 @@ export default function Presentation() {
     }
     window.addEventListener('keydown', onKey)
     return () => window.removeEventListener('keydown', onKey)
-  }, [go, index, menuOpen, notesOpen, exit, toggleFullscreen, fullscreenSupported])
+  }, [go, goBy, menuOpen, notesOpen, exit, toggleFullscreen, fullscreenSupported])
 
   if (index < 0) return <Navigate to={`/present/${chapterAliases[slug ?? ''] ?? chapters[0].slug}`} replace />
 
@@ -180,7 +189,7 @@ export default function Presentation() {
       </p>
 
       <footer className="pr-bottom">
-        <button type="button" className="btn btn-sm" onClick={() => go(index - 1)} disabled={index === 0} aria-label="Previous chapter">
+        <button type="button" className="btn btn-sm" onClick={() => goBy(-1)} disabled={index === 0} aria-label="Previous chapter">
           ← <span className="hide-sm">Previous</span>
         </button>
         <nav className="pr-progress" aria-label="Chapters">
@@ -199,7 +208,7 @@ export default function Presentation() {
             ))}
           </ol>
         </nav>
-        <button type="button" className="btn btn-sm btn-primary" onClick={() => go(index + 1)} disabled={index === chapters.length - 1} aria-label="Next chapter">
+        <button type="button" className="btn btn-sm btn-primary" onClick={() => goBy(1)} disabled={index === chapters.length - 1} aria-label="Next chapter">
           <span className="hide-sm">Next</span> →
         </button>
       </footer>

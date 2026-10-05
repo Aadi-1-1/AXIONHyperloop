@@ -1020,3 +1020,7 @@
 .s-bullets + .s-note {
   margin-top: 1em;
 }
+.pr-stage .np-fallback {
+  aspect-ratio: auto;
+  height: min(36vh, 300px);
+}

@@ -25,7 +25,7 @@ function assert(cond, msg) {
   if (!cond) throw new Error(msg)
 }
 
-const routes = ['/', '/network', '/business', '/investors', '/evidence', '/leadership', '/present/vision', '/present/financials']
+const routes = ['/', '/network', '/business', '/investors', '/evidence', '/leadership', '/present/vision', '/present/economics']
 
 const browser = await chromium.launch({ executablePath: EXEC })
 
@@ -39,14 +39,15 @@ async function newPage(opts = {}) {
 }
 
 // ---------- Direct loads ----------
-for (const r of [...routes, '/not-a-page', '/present', '/present/unknown-slug']) {
+for (const r of [...routes, '/not-a-page', '/present', '/present/unknown-slug', '/present/financials', '/network?view=corridor&from=nairobi&to=johannesburg']) {
   await check(`direct load ${r}`, async () => {
     const page = await newPage()
     const res = await page.goto(BASE + r, { waitUntil: 'networkidle' })
     assert(res.status() === 200, `status ${res.status()}`)
     if (r.startsWith('/present')) {
       await page.waitForSelector('.pr-counter')
-      if (r !== '/present/financials') assert(page.url().endsWith('/present/vision'), `redirected to ${page.url()}`)
+      const expect = r === '/present/financials' ? '/present/economics' : r === '/present/economics' ? '/present/economics' : '/present/vision'
+      assert(page.url().endsWith(expect), `${r} → ${page.url()}`)
     } else {
       await page.waitForSelector('h1')
     }
@@ -145,6 +146,7 @@ await check('presentation keyboard, menu, notes, exit', async () => {
   assert(await page.getByRole('dialog', { name: 'Chapters' }).isVisible(), 'M opens menu')
   await page.getByRole('dialog').getByRole('button', { name: /Business model/ }).click()
   await waitPath(page, /present\/business-model/)
+  await page.waitForFunction(() => document.querySelector('.pr-counter')?.textContent.includes('07'), null, { timeout: 3000 }).catch(() => {})
   assert((await counter()).includes('07'), 'menu jump → 07')
   await page.getByRole('button', { name: /^9\. Development programme/ }).click()
   await waitPath(page, /present\/programme/)
@@ -162,50 +164,147 @@ await check('presentation keyboard, menu, notes, exit', async () => {
 
 await check('presentation demo opens tool and returns to same chapter', async () => {
   const page = await newPage()
-  await page.goto(BASE + '/present/network', { waitUntil: 'networkidle' })
-  await page.getByRole('link', { name: /Open network explorer/ }).click()
-  await waitPath(page, /\/network\?present=network/)
-  await page.waitForSelector('.network-map svg')
+  await page.goto(BASE + '/present/lead-corridor', { waitUntil: 'networkidle' })
+  await page.getByRole('link', { name: /Open the corridor view/ }).click()
+  await waitPath(page, /\/network\?.*present=lead-corridor/)
+  await page.waitForSelector('.ex-visual svg [data-corridor="singapore-kuala-lumpur"]')
   const bar = page.getByRole('complementary', { name: 'Presentation in progress' })
   assert(await bar.isVisible(), 'return bar visible')
   await page.getByRole('link', { name: 'Business Model' }).first().click()
   await page.waitForURL(BASE + '/business')
   assert(await bar.isVisible(), 'return bar persists across pages')
   await bar.getByRole('link', { name: 'Return to chapter' }).click()
-  await waitPath(page, /present\/network/)
-  assert((await page.textContent('.pr-counter')).includes('04'), 'returned to 04')
-  await page.goto(BASE + '/present/financials', { waitUntil: 'networkidle' })
-  await page.getByRole('link', { name: /Open operating explorer/ }).click()
-  await waitPath(page, /business\?present=financials#operating-model/)
-  await page.waitForSelector('.opx')
+  await waitPath(page, /present\/lead-corridor/)
+  assert((await page.textContent('.pr-counter')).includes('05'), 'returned to 05')
+  await page.goto(BASE + '/present/economics', { waitUntil: 'networkidle' })
+  await page.getByRole('link', { name: /Open the scenario model/ }).click()
+  await waitPath(page, /business\?present=economics#corridor-model/)
+  await page.waitForSelector('.cmodel')
+  await page.getByRole('complementary', { name: 'Presentation in progress' }).getByRole('link', { name: 'Return to chapter' }).click()
+  await waitPath(page, /present\/economics/)
+  assert((await page.textContent('.pr-counter')).includes('08'), 'returned to 08')
   await page.context().close()
 })
 
+await check('presentation funding chapter separates $50m from construction finance', async () => {
+  const page = await newPage({ viewport: { width: 1280, height: 720 } })
+  await page.goto(BASE + '/present/ask', { waitUntil: 'networkidle' })
+  const now = await page.textContent('.s-contrast-now')
+  const later = await page.textContent('.s-contrast-later')
+  assert(now.includes('$50m') && now.includes('Sought now'), 'sought now panel')
+  assert(later.includes('Not part of this ask') && /\$23\.\dbn/.test(later), `construction panel: ${later}`)
+  const over = await page.evaluate(() => { const s = document.querySelector('.pr-stage'); return s.scrollHeight - s.clientHeight })
+  assert(over <= 2, `ask slide overflows 1280×720 by ${over}px`)
+  const text = await page.textContent('main')
+  assert(!/valuation of|IRR|return of \d/i.test(text), 'no valuation or returns language')
+  await page.context().close()
+})
+
+await check('every chapter fits projector sizes without scrolling', async () => {
+  for (const [w, h] of [[1920, 1080], [1280, 720], [1024, 768]]) {
+    const page = await newPage({ viewport: { width: w, height: h }, reducedMotion: 'reduce' })
+    await page.goto(BASE + '/present/vision', { waitUntil: 'networkidle' })
+    const bad = []
+    for (let i = 0; i < 12; i++) {
+      await page.waitForTimeout(700)
+      const over = await page.evaluate(() => { const s = document.querySelector('.pr-stage'); return s.scrollHeight - s.clientHeight })
+      if (over > 2) bad.push(`${new URL(page.url()).pathname} +${over}px`)
+      await page.keyboard.press('ArrowRight')
+    }
+    assert(bad.length === 0, `${w}×${h}: ${bad.join(', ')}`)
+    await page.context().close()
+  }
+})
+
 // ---------- Network explorer ----------
-await check('network explorer controls', async () => {
+const REGIONS = ['China and Southeast Asia', 'Japan', 'India', 'Europe', 'East Africa', 'Southern Africa', 'North America', 'South America']
+
+await check('regional views: lines end at hub markers and labels do not collide', async () => {
+  const page = await newPage({ reducedMotion: 'reduce' })
+  await page.goto(BASE + '/network?view=regional', { waitUntil: 'networkidle' })
+  const problems = []
+  for (const name of REGIONS) {
+    await page.locator('.region-picker').getByRole('button', { name, exact: true }).click()
+    await page.waitForTimeout(500)
+    const r = await page.evaluate(() => {
+      const svg = document.querySelector('.ex-visual svg')
+      const hubs = [...svg.querySelectorAll('[data-hub]')].map((g) => {
+        const m = /translate\(([-\d.]+),([-\d.]+)\)/.exec(g.getAttribute('transform'))
+        return { id: g.dataset.hub, x: +m[1], y: +m[2] }
+      })
+      const issues = []
+      const arcs = [...svg.querySelectorAll('path[data-corridor]')]
+      for (const p of arcs) {
+        // Freight/passenger offsets taper to zero, so both ends must sit on a hub marker.
+        const L = p.getTotalLength()
+        for (const pt of [p.getPointAtLength(0), p.getPointAtLength(L)]) {
+          const inView = pt.x >= 0 && pt.y >= 0 && pt.x <= svg.clientWidth && pt.y <= svg.clientHeight
+          const near = hubs.some((h) => Math.hypot(h.x - pt.x, h.y - pt.y) < 2.5)
+          if (inView && !near) issues.push(`${p.dataset.corridor} end (${pt.x.toFixed(0)},${pt.y.toFixed(0)}) not on a hub`)
+        }
+      }
+      const boxes = [...svg.querySelectorAll('.nm-labels text')].map((t) => ({ t: t.textContent, b: t.getBBox() }))
+      for (let i = 0; i < boxes.length; i++)
+        for (let j = i + 1; j < boxes.length; j++) {
+          const a = boxes[i].b, c = boxes[j].b
+          if (a.x < c.x + c.width - 1 && c.x < a.x + a.width - 1 && a.y < c.y + c.height - 1 && c.y < a.y + a.height - 1) issues.push(`labels overlap: ${boxes[i].t} / ${boxes[j].t}`)
+        }
+      return { arcs: arcs.length, labels: boxes.map((b) => b.t), issues }
+    })
+    if (r.arcs === 0) problems.push(`${name}: no corridors drawn`)
+    for (const i of r.issues) problems.push(`${name}: ${i}`)
+    if (name === 'India') for (const c of ['Delhi', 'Mumbai', 'Bengaluru', 'Chennai']) if (!r.labels.some((l) => l.includes(c))) problems.push(`India: ${c} unlabelled`)
+    if (name === 'North America' && !r.labels.some((l) => l.includes('Los Angeles'))) problems.push('Los Angeles not labelled as future hub')
+  }
+  assert(problems.length === 0, problems.slice(0, 6).join(' ; '))
+  assert(page.errors.length === 0, page.errors.join(' | '))
+  await page.context().close()
+})
+
+await check('trace journey: proposed, conceptual and disconnected cases', async () => {
+  const page = await newPage({ reducedMotion: 'reduce' })
+  const kind = () => page.locator('.ex-panel .trace-kind').first().getAttribute('class')
+  await page.goto(BASE + '/network?view=corridor&from=kunming&to=singapore', { waitUntil: 'networkidle' })
+  assert((await kind()).includes('proposed'), `kunming→singapore ${await kind()}`)
+  const list = await page.textContent('.ex-panel')
+  for (const c of ['Vientiane', 'Bangkok', 'Kuala Lumpur']) assert(list.includes(c), `intermediate ${c} listed`)
+  await page.goto(BASE + '/network?view=corridor&from=shanghai&to=tokyo', { waitUntil: 'networkidle' })
+  assert((await kind()).includes('conceptual'), `shanghai→tokyo ${await kind()}`)
+  assert((await page.textContent('.ex-panel')).includes('Fukuoka'), 'via Fukuoka')
+  await page.goto(BASE + '/network?view=corridor', { waitUntil: 'networkidle' })
+  await page.selectOption('#ex-from', 'nairobi')
+  await page.selectOption('#ex-to', 'johannesburg')
+  await page.getByRole('button', { name: 'Trace', exact: true }).click()
+  await waitPath(page, /from=nairobi.*to=johannesburg|to=johannesburg.*from=nairobi/)
+  assert((await kind()).includes('none'), `nairobi→johannesburg ${await kind()}`)
+  assert((await page.textContent('.ex-panel')).includes('does not'), 'states no connection')
+  assert((await page.locator('.ex-visual svg path[data-corridor]').count()) >= 2, 'both separate networks drawn')
+  await page.getByRole('button', { name: 'Swap origin and destination' }).click()
+  await page.getByRole('button', { name: 'Trace', exact: true }).click()
+  await waitPath(page, /from=johannesburg/)
+  await page.goto(BASE + '/network?view=corridor&from=tokyo&to=los-angeles', { waitUntil: 'networkidle' })
+  assert((await kind()).includes('conceptual'), `tokyo→LA ${await kind()}`)
+  assert(page.errors.length === 0, page.errors.join(' | '))
+  await page.context().close()
+})
+
+await check('corridor view and global vision controls', async () => {
   const page = await newPage()
-  await page.goto(BASE + '/network', { waitUntil: 'networkidle' })
+  await page.goto(BASE + '/network?view=corridor&corridor=singapore-kuala-lumpur', { waitUntil: 'networkidle' })
+  const panel = page.locator('.ex-panel')
+  const t = await panel.textContent()
+  assert(t.includes('Assumed alignment') && t.includes('350 km'), 'alignment vs distance shown')
+  await page.selectOption('#ex-corridor', 'europe-americas')
+  await page.waitForTimeout(400)
+  assert((await panel.textContent()).toLowerCase().includes('no pods'), 'no pods on ocean link')
+  await page.getByRole('group', { name: 'Network view' }).getByRole('button', { name: 'Global vision' }).click()
   await page.waitForSelector('.network-map svg .nm-arc')
-  const phase2 = page.getByRole('button', { name: /India and Europe/ })
-  await phase2.click()
-  assert((await phase2.getAttribute('aria-pressed')) === 'true', 'phase 2 pressed')
-  assert((await page.locator('.nm-hub').count()) > 11, 'phase 2 hubs added')
-  await page.getByRole('button', { name: /Africa and the Americas/ }).click()
-  await page.getByRole('button', { name: /Europe — Americas/ }).click()
-  const panel = page.getByRole('complementary', { name: 'Selection details' })
-  assert((await panel.textContent()).includes('not surveyed tube alignments'), 'alignment disclaimer')
-  assert((await panel.textContent()).includes('No pods are animated'), 'no pods on ocean crossing')
-  await page.getByRole('button', { name: 'Kunming', exact: true }).click()
-  assert((await panel.textContent()).includes('Planning assumption'), 'hub detail')
-  await page.getByRole('button', { name: 'Reset view' }).click()
-  assert((await panel.textContent()).includes('No launch corridor has been selected'), 'reset clears selection')
+  await page.getByRole('group', { name: 'Highlight phase' }).getByRole('button', { name: /Phase 2/ }).click()
+  assert((await page.locator('.network-map .nm-arc').count()) > 10, 'phase highlight dims, does not hide')
   await page.getByRole('button', { name: 'Freight', exact: true }).click()
-  assert((await page.locator('.nm-arc.freight').count()) === 0, 'freight hidden')
-  assert((await page.locator('.nm-arc.passenger').count()) > 0, 'passenger shown')
-  await page.getByRole('button', { name: 'Passenger', exact: true }).click()
-  assert((await page.locator('.nm-arc').count()) === 0, 'all hidden')
+  assert((await page.locator('.network-map .nm-arc.freight').count()) === 0, 'freight hidden')
   await page.getByRole('button', { name: 'Freight', exact: true }).click()
-  const play = page.locator('.explorer-controls').getByRole('button', { name: /Pause|Play/ })
+  const play = page.locator('.ex-play')
   const before = await play.textContent()
   await play.click()
   assert((await play.textContent()) !== before, 'play/pause toggles')
@@ -258,8 +357,32 @@ await check('operating explorer: scenarios, zero margin, reset', async () => {
   await page.waitForTimeout(600)
   assert((await page.textContent('.opx-results')).includes('Break-even exceeds capacity'), 'beyond capacity')
   const text = await page.textContent('main')
-  assert(text.includes('$10.8m') && text.includes('not on top of it'), 'salary inclusion note')
   assert(!/\$60\.8m/.test(text), 'no double-counted salaries')
+  await page.context().close()
+})
+
+await check('lead corridor model: verdict, scenarios, levers, funding consistency', async () => {
+  const page = await newPage()
+  await page.goto(BASE + '/business#corridor-model', { waitUntil: 'networkidle' })
+  const res = page.locator('.cmodel')
+  let t = await res.textContent()
+  assert(t.includes('$2.83/kg') && t.includes('$0.45/kg'), 'central required vs assumed price')
+  assert(t.includes('$23.3bn'), 'central construction')
+  assert(t.includes('not') && t.includes('renewals or construction cost'), 'honest central verdict')
+  await page.getByRole('group', { name: 'Scenario' }).getByRole('button', { name: /Optimistic/ }).click()
+  await page.waitForTimeout(300)
+  t = await res.textContent()
+  assert(t.includes('$16.6bn') && t.includes('$0.99/kg'), 'optimistic scenario')
+  await page.getByRole('group', { name: 'Scenario' }).getByRole('button', { name: /Central/ }).click()
+  await page.getByLabel('Average charge', { exact: true }).fill('3')
+  await page.waitForTimeout(300)
+  assert((await page.textContent('.verdict')).includes('would recover construction cost'), `verdict at $3/kg: ${await page.textContent('.verdict')}`)
+  await page.goto(BASE + '/investors', { waitUntil: 'networkidle' })
+  const inv = await page.textContent('main')
+  assert(inv.includes('$50m') && inv.includes('$23.3bn') && inv.includes('$38m'), 'investor figures consistent')
+  assert(inv.includes('Not committed'), 'public support never committed')
+  assert(inv.includes('$10.8m') && inv.includes('not on top of it'), 'salary inclusion note')
+  assert(!/\$60\.8m/.test(inv), 'no double-counted salaries')
   await page.context().close()
 })
 
@@ -340,6 +463,22 @@ await check('mobile menu opens and navigates', async () => {
   await page.context().close()
 })
 
+await check('hero sequence: pod → corridor → network, with pause and replay', async () => {
+  const page = await newPage()
+  await page.goto(BASE + '/', { waitUntil: 'networkidle' })
+  const act = () => page.evaluate(() => [...document.querySelectorAll('.hv-acts li')].findIndex((li) => li.classList.contains('on')) + 1)
+  assert((await act()) === 1, 'opens on the pod')
+  await page.waitForFunction(() => document.querySelectorAll('.hv-acts li')[1].classList.contains('on'), null, { timeout: 12000 })
+  await page.waitForFunction(() => document.querySelectorAll('.hv-acts li')[2].classList.contains('on'), null, { timeout: 12000 })
+  const hero = page.locator('.hero-visual')
+  await hero.getByRole('button', { name: 'Pause', exact: true }).click()
+  assert(await hero.getByRole('button', { name: 'Play', exact: true }).isVisible(), 'pause → play')
+  await hero.getByRole('button', { name: 'Replay' }).click()
+  assert((await act()) === 1, 'replay restarts at the pod')
+  assert(page.errors.length === 0, page.errors.join(' | '))
+  await page.context().close()
+})
+
 // ---------- Reduced motion ----------
 await check('reduced motion: no slide animation, static hero', async () => {
   const page = await newPage({ reducedMotion: 'reduce' })
@@ -350,9 +489,10 @@ await check('reduced motion: no slide animation, static hero', async () => {
   await page.goto(BASE + '/', { waitUntil: 'networkidle' })
   await page.waitForSelector('.hero-visual canvas')
   assert((await page.locator('.hero-visual').getByRole('button', { name: 'Pause' }).count()) === 0, 'no autoplay control when reduced')
-  assert((await page.textContent('.hv-caption')).includes('Proposed Phase 1'), 'shows final network frame')
+  assert((await page.textContent('.hv-caption')).includes('Phase 1 vision'), 'shows final network frame')
   await page.goto(BASE + '/network', { waitUntil: 'networkidle' })
-  assert(await page.locator('.explorer-controls').getByRole('button', { name: 'Play' }).isDisabled(), 'motion control disabled')
+  assert(await page.locator('.ex-play').isDisabled(), 'motion control disabled')
+  assert((await page.locator('.ex-visual .nm-pod').count()) === 0, 'no moving pods')
   await page.context().close()
 })
 
@@ -387,7 +527,7 @@ await check('network renders with WebGL disabled', async () => {
   const page = await b.newPage()
   const errs = []
   page.on('pageerror', (e) => errs.push(String(e)))
-  await page.goto(BASE + '/network', { waitUntil: 'networkidle' })
+  await page.goto(BASE + '/network?view=global', { waitUntil: 'networkidle' })
   const webgl = await page.evaluate(() => !!document.createElement('canvas').getContext('webgl'))
   assert(!webgl, 'WebGL should be unavailable in this check')
   await page.waitForSelector('.network-map svg .nm-land')
